@@ -1,0 +1,343 @@
+/* Variables de couleurs OCP */
+:root {
+  --ocp-green: #12683b;
+  --ocp-orange: #f68b1f;
+  --ocp-blue: #003366;
+  --ocp-light-gray: #f5f5f5;
+  --ocp-dark-gray: #444;
+  --ocp-white: #ffffff;
+  --ocp-error: #d9534f;
+  --ocp-success: #5cb85c;
+}
+
+/* Styles de base */
+.equipement-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Header OCP amélioré */
+.ocp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--ocp-white);
+  border-bottom: 2px solid var(--ocp-orange);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.ocp-title-container {
+  text-align: left;
+}
+
+.ocp-main-title {
+  color: var(--ocp-green);
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  letter-spacing: 0.5px;
+}
+
+.ocp-subtitle {
+  color: var(--ocp-blue);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 8px 0 0 0;
+  padding: 0;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--ocp-white);
+  border-radius: 4px;
+}
+
+.ocp-logo {
+  height: 70px;
+  width: auto;
+  max-width: 200px;
+  transition: transform 0.3s ease;
+}
+
+.ocp-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Titres */
+.equipement-list h2 {
+  color: var(--ocp-green);
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.equipement-list h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: var(--ocp-orange);
+  border-radius: 3px;
+}
+
+/* Section des filtres améliorée */
+.filtres-container {
+  background-color: var(--ocp-white);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+}
+
+.filtres-container h3 {
+  color: var(--ocp-blue);
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.filtres-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.filtre-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filtre-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--ocp-dark-gray);
+}
+
+.filtre-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: var(--ocp-white);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.filtre-group select:focus {
+  border-color: var(--ocp-orange);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(246, 139, 31, 0.2);
+}
+
+/* Boutons améliorés */
+.filtres-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  flex-basis: 100%;
+  justify-content: flex-end;
+}
+
+.btn {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.btn-filter {
+  background-color: var(--ocp-green);
+  color: var(--ocp-white);
+}
+
+.btn-filter:hover {
+  background-color: #0e5a32;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(18, 104, 59, 0.2);
+}
+
+.btn-reset {
+  background-color: var(--ocp-orange);
+  color: var(--ocp-white);
+}
+
+.btn-reset:hover {
+  background-color: #e07c16;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(246, 139, 31, 0.2);
+}
+
+.btn-ajouter {
+  background-color: var(--ocp-blue);
+  color: var(--ocp-white);
+  padding: 12px 24px;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 51, 102, 0.2);
+}
+
+.btn-ajouter:hover {
+  background-color: #002244;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 51, 102, 0.3);
+}
+
+/* Tableau amélioré */
+.table-equipements {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table-equipements th,
+.table-equipements td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.table-equipements th {
+  background-color: var(--ocp-blue);
+  color: var(--ocp-white);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.table-equipements tr:nth-child(even) {
+  background-color: var(--ocp-light-gray);
+}
+
+.table-equipements tr:hover {
+  background-color: #e8f4ea;
+}
+
+/* Boutons d'actions améliorés */
+.btn-edit, 
+.btn-delete,
+.btn-interventions {
+  border: none;
+  padding: 8px 12px;
+  margin-right: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.btn-edit {
+  background-color: var(--ocp-orange);
+  color: var(--ocp-white);
+}
+
+.btn-edit:hover {
+  background-color: #e07c16;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(246, 139, 31, 0.3);
+}
+
+.btn-delete {
+  background-color: var(--ocp-error);
+  color: var(--ocp-white);
+}
+
+.btn-delete:hover {
+  background-color: #c9302c;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(217, 83, 79, 0.3);
+}
+
+.btn-interventions {
+  background-color: var(--ocp-success);
+  color: var(--ocp-white);
+  text-decoration: none;
+}
+
+.btn-interventions:hover {
+  background-color: #4cae4c;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(92, 184, 92, 0.3);
+}
+
+/* Effets de transition pour les lignes du tableau */
+.table-equipements tr {
+  transition: background-color 0.2s ease;
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+  .ocp-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .logo-container {
+    justify-content: center;
+  }
+  
+  .filtres-form {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .filtres-actions {
+    justify-content: center;
+  }
+  
+  .table-equipements {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .btn-ajouter {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Animation pour les boutons */
+@keyframes buttonPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.btn-ajouter:active,
+.btn-filter:active,
+.btn-reset:active {
+  animation: buttonPulse 0.3s ease;
+}

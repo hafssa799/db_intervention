@@ -1,0 +1,534 @@
+:root {
+    /* Couleurs principales OCP */
+    --ocp-primary: #1B4D3E; /* Vert phosphate profond */
+    --ocp-secondary: #2E7D32; /* Vert croissance */
+    --ocp-accent: #4CAF50; /* Vert agriculture */
+    --ocp-gold: #FFB300; /* Or maroc */
+    --ocp-blue: #0D47A1; /* Bleu innovation */
+    --ocp-sky: #03A9F4; /* Bleu ciel */
+
+    /* Couleurs fonctionnelles - Ajustées pour des teintes professionnelles */
+    --ocp-success: #2E7D32; /* Reprend ocp-secondary pour un vert cohérent */
+    --ocp-warning: #FFB300; /* Reprend ocp-gold pour un orange cohérent */
+    --ocp-danger: #C62828; /* Garde le rouge OCP */
+    --ocp-info: #0D47A1; /* Reprend ocp-blue pour un bleu cohérent */
+
+    /* Neutres sophistiqués */
+    --ocp-dark: #1A1A1A;
+    --ocp-charcoal: #2C2C2C;
+    --ocp-gray-800: #424242;
+    --ocp-gray-700: #616161;
+    --ocp-gray-600: #757575;
+    --ocp-gray-500: #9E9E9E;
+    --ocp-gray-400: #BDBDBD;
+    --ocp-gray-200: #E0E0E0;
+    --ocp-gray-100: #F5F5F5;
+    --ocp-gray-50: #FAFAFA;
+    --ocp-white: #FFFFFF;
+
+    /* Dégradés signature */
+    --gradient-primary: linear-gradient(135deg, #1B4D3E 0%, #2E7D32 50%, #4CAF50 100%);
+    --gradient-gold: linear-gradient(135deg, #FFB300 0%, #FFA000 100%);
+    --gradient-blue: linear-gradient(135deg, #0D47A1 0%, #1565C0 100%);
+    --gradient-sunset: linear-gradient(135deg, #FF6F00 0%, #FF8F00 50%, #FFB300 100%);
+
+    /* Ombres élégantes */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 10px rgba(76, 175, 80, 0.2);
+
+    /* Typographie */
+    --font-primary: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-heading: 'Poppins', 'Inter', sans-serif;
+
+    /* Espacements et Tailles (adaptés de votre fichier précédent) */
+    --space-1: 0.25rem; /* 4px */
+    --space-2: 0.5rem;  /* 8px */
+    --space-3: 0.75rem; /* 12px */
+    --space-4: 1rem;    /* 16px */
+    --space-5: 1.25rem; /* 20px */
+    --space-6: 1.5rem;  /* 24px */
+    --space-8: 2rem;    /* 32px */
+    --space-10: 2.5rem; /* 40px */
+    --space-12: 3rem;   /* 48px */
+    --space-16: 4rem;   /* 64px */
+
+    /* Tailles de texte */
+    --text-sm: 0.875rem; /* 14px */
+    --text-base: 1rem;   /* 16px */
+    --text-lg: 1.125rem; /* 18px */
+    --text-xl: 1.25rem;  /* 20px */
+    --text-2xl: 1.5rem;  /* 24px */
+    --text-3xl: 1.875rem;/* 30px */
+
+    /* Rayons de bordure */
+    --radius-sm: 0.25rem; /* 4px */
+    --radius-md: 0.375rem;/* 6px */
+    --radius-lg: 0.5rem;  /* 8px */
+    --radius-xl: 0.75rem; /* 12px */
+    --radius-2xl: 1rem;   /* 16px */
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-base: all 0.3s ease;
+
+    /* Couleurs spécifiques aux messages d'état (maintenues) */
+    --error: #C62828;
+    --error-light: #FEF2F2;
+}
+
+/* Base and reset (keep the same as previous) */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.2s !important; /* Keep short transitions for a snappy feel */
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Main Container - equipement-form */
+.equipement-form {
+    max-width: 700px; /* Further reduced max-width for a more compact form */
+    margin: 2rem auto; /* Adjusted margin-top for better visual flow, centered horizontally */
+    padding: var(--space-8);
+    font-family: var(--font-primary);
+    position: relative;
+    background: var(--ocp-white); /* Solid white background for the form container */
+    border-radius: var(--radius-2xl); /* Rounded corners for the container */
+    box-shadow: var(--shadow-xl); /* Stronger shadow for depth */
+    border: 1px solid var(--ocp-gray-100); /* Subtle border */
+    overflow: hidden; /* Ensure content respects border-radius */
+}
+
+/* Top accent line for the form */
+.equipement-form::before {
+    content: "";
+    position: absolute;
+    top: 0; /* Align to the top of the form box */
+    left: 0;
+    right: 0;
+    width: 100%; /* Spans full width */
+    height: 6px; /* Slightly thicker */
+    background: linear-gradient(90deg,
+        var(--ocp-primary) 0%, /* Start with primary green */
+        var(--ocp-accent) 50%, /* Mid-point with accent green */
+        var(--ocp-gold) 100%); /* End with OCP gold */
+    border-radius: 0; /* No radius on the top line */
+    opacity: 1; /* Fully opaque */
+    z-index: 1; /* Ensure it's above other form elements if needed */
+}
+
+/* Form Title */
+.equipement-form h2 {
+    color: var(--ocp-primary); /* Use deep primary green */
+    font-size: var(--text-2xl); /* Slightly smaller title */
+    font-weight: 700;
+    font-family: var(--font-heading); /* Use heading font */
+    margin-bottom: var(--space-6); /* Reduced margin */
+    text-align: center;
+    position: relative;
+    padding-bottom: var(--space-3); /* Reduced padding */
+}
+
+.equipement-form h2::after {
+    content: '';
+    display: block;
+    width: 80px; /* Shorter underline */
+    height: 3px;
+    background: var(--ocp-gold); /* Gold underline */
+    margin: var(--space-2) auto 0; /* Reduced margin */
+    border-radius: var(--radius-sm);
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    font-size: var(--text-lg);
+    color: var(--ocp-info); /* Use OCP Info blue */
+    margin: var(--space-8) 0; /* Reduced margin */
+    padding: var(--space-6); /* Reduced padding */
+    background: var(--ocp-gray-50); /* Light gray background */
+    border-radius: var(--radius-lg); /* Consistent radius */
+    border: 1px solid var(--ocp-gray-200); /* Light gray border */
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm); /* Subtle shadow */
+}
+
+.loading::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(13, 71, 161, 0.1), transparent); /* Shimmer with OCP blue */
+    animation: loadingShimmer 1.5s infinite; /* Slightly faster shimmer */
+}
+
+@keyframes loadingShimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Error Message */
+.error-message {
+    background: #FEE2E2; /* Light red background from the previous component */
+    color: var(--ocp-danger); /* OCP Danger red */
+    padding: var(--space-3) var(--space-5); /* Adjusted padding */
+    margin-bottom: var(--space-5); /* Adjusted margin */
+    border-radius: var(--radius-md); /* Consistent radius */
+    border: 1px solid #FECACA; /* Border from previous component */
+    border-left: 4px solid var(--ocp-danger); /* Stronger left border */
+    font-weight: 500;
+    position: relative;
+    backdrop-filter: blur(5px); /* Reduced blur for subtlety */
+}
+
+.error-message::before {
+    content: "⚠️";
+    margin-right: var(--space-1); /* Reduced margin */
+    font-size: var(--text-base); /* Adjusted icon size */
+}
+
+/* Form Container within .equipement-form */
+.equipement-form form {
+    background: var(--ocp-white); /* White background */
+    padding: var(--space-8); /* Reduced padding for the inner form */
+    border-radius: var(--radius-xl); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Subtle shadow */
+    border: 1px solid var(--ocp-gray-100); /* Subtle border */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Removed the inner form::before gradient, as the outer .equipement-form handles it now */
+.equipement-form form::before {
+   content: none; /* Remove this gradient as it's redundant with the parent .equipement-form::before */
+}
+
+
+/* Form Groups */
+.form-group {
+    margin-bottom: var(--space-5); /* Reduced margin */
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-2); /* Reduced margin */
+    font-weight: 600;
+    color: var(--ocp-gray-700);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.2px; /* Slightly reduced letter spacing */
+    position: relative;
+}
+
+.form-group label::after {
+    content: "";
+    position: absolute;
+    bottom: -3px; /* Adjusted position */
+    left: 0;
+    width: 25px; /* Shorter underline */
+    height: 2px;
+    background: var(--ocp-accent); /* Use accent green for label underline */
+    border-radius: var(--radius-full);
+    opacity: 0.8; /* Slightly more opaque */
+}
+
+/* Input Fields */
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: var(--space-3) var(--space-4); /* Reduced padding */
+    border: 1px solid var(--ocp-gray-200); /* Thinner, lighter border */
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-family: var(--font-primary);
+    transition: all 0.2s ease; /* Faster transition */
+    background: var(--ocp-gray-50); /* Light gray background */
+    color: var(--ocp-dark); /* Dark text for contrast */
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06); /* Subtle inset shadow */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--ocp-secondary); /* Use OCP secondary green for focus */
+    background: var(--ocp-white); /* White background on focus */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15); /* Subtle focus glow with OCP secondary */
+    transform: none; /* No transform on focus for input fields */
+}
+
+.form-group input:hover,
+.form-group select:hover {
+    border-color: var(--ocp-gray-400); /* Slightly darker gray on hover */
+    background: var(--ocp-white);
+}
+
+.form-group input[type="date"] {
+    font-family: var(--font-primary);
+    color: var(--ocp-gray-700);
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: var(--space-3); /* Reduced gap */
+    margin-top: var(--space-8); /* Reduced margin-top */
+    padding-top: var(--space-5); /* Reduced padding-top */
+    border-top: 1px solid var(--ocp-gray-100); /* Lighter border */
+}
+
+/* Submit Button */
+.btn-submit {
+    background: var(--ocp-primary); /* Solid OCP Primary green */
+    color: var(--ocp-white);
+    border: none;
+    padding: var(--space-3) var(--space-6); /* Adjusted padding */
+    border-radius: var(--radius-lg); /* Slightly less rounded */
+    font-size: var(--text-base);
+    font-weight: 600; /* Slightly less bold */
+    font-family: var(--font-primary); /* Use primary font */
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s ease; /* Faster transition */
+    position: relative;
+    overflow: hidden;
+    min-height: 48px; /* Slightly smaller min-height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1); /* Reduced gap */
+    box-shadow: var(--shadow-md);
+    text-transform: uppercase; /* Uppercase text */
+    letter-spacing: 0.5px; /* Added letter spacing */
+}
+
+.btn-submit::before {
+    content: "✓";
+    font-size: var(--text-lg);
+    margin-right: var(--space-1);
+}
+
+.btn-submit:hover {
+    background: var(--ocp-secondary); /* OCP secondary green on hover */
+    transform: translateY(-1px); /* Subtle lift */
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Cancel Button */
+.btn-cancel {
+    background: var(--ocp-gray-200); /* Light gray background */
+    color: var(--ocp-gray-800); /* Dark gray text */
+    border: 1px solid var(--ocp-gray-300); /* Subtle border */
+    padding: var(--space-3) var(--space-6); /* Adjusted padding */
+    border-radius: var(--radius-lg); /* Slightly less rounded */
+    font-size: var(--text-base);
+    font-weight: 600;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    box-shadow: var(--shadow-md);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-cancel::before {
+    content: "✕";
+    font-size: var(--text-lg);
+    margin-right: var(--space-1);
+}
+
+.btn-cancel:hover {
+    background: var(--ocp-gray-100); /* Even lighter gray on hover */
+    color: var(--ocp-dark); /* Darker text on hover */
+    border-color: var(--ocp-gray-400);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-cancel:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .equipement-form {
+        padding: var(--space-6);
+        margin: 1.5rem auto;
+        max-width: 95%; /* Allow it to be slightly wider on smaller screens */
+    }
+
+    .equipement-form h2 {
+        font-size: var(--text-xl);
+        margin-bottom: var(--space-5);
+    }
+
+    .equipement-form h2::after {
+        width: 60px;
+    }
+
+    .equipement-form form {
+        padding: var(--space-6);
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .btn-submit,
+    .btn-cancel {
+        min-height: 44px;
+        padding: var(--space-3) var(--space-4);
+    }
+}
+
+@media (max-width: 480px) {
+    .equipement-form {
+        padding: var(--space-4);
+    }
+
+    .equipement-form form {
+        padding: var(--space-4);
+    }
+
+    .form-group label {
+        font-size: var(--text-sm);
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-sm);
+    }
+
+    .btn-submit,
+    .btn-cancel {
+        font-size: var(--text-sm);
+        min-height: 40px;
+    }
+}
+
+/* --- Dark Mode (Optional) --- */
+@media (prefers-color-scheme: dark) {
+    .equipement-form {
+        background: var(--ocp-charcoal);
+        box-shadow: var(--shadow-dark-md); /* Adjust dark mode shadow */
+        border-color: var(--ocp-dark-border); /* Dark mode border */
+    }
+
+    .equipement-form::before {
+        background: linear-gradient(90deg,
+            var(--ocp-primary) 0%,
+            var(--ocp-accent) 50%,
+            var(--ocp-gold) 100%);
+    }
+
+    .equipement-form h2 {
+        color: var(--ocp-gray-100);
+    }
+
+    .loading {
+        background: var(--ocp-gray-800);
+        color: var(--ocp-gray-100);
+        border-color: var(--ocp-gray-700);
+    }
+
+    .loading::before {
+        background: linear-gradient(90deg, transparent, rgba(13, 71, 161, 0.2), transparent);
+    }
+
+    .error-message {
+        background: rgba(198, 40, 40, 0.2);
+        color: var(--ocp-danger);
+        border-color: rgba(198, 40, 40, 0.4);
+    }
+
+    .equipement-form form {
+        background: var(--ocp-dark);
+        box-shadow: var(--shadow-dark-lg);
+        border-color: var(--ocp-gray-700);
+    }
+
+    .form-group label {
+        color: var(--ocp-gray-400);
+    }
+
+    .form-group input,
+    .form-group select {
+        background: var(--ocp-gray-800);
+        border-color: var(--ocp-gray-700);
+        color: var(--ocp-gray-100);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: var(--ocp-secondary);
+        background: var(--ocp-dark);
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.25);
+    }
+
+    .form-group input:hover,
+    .form-group select:hover {
+        border-color: var(--ocp-gray-600);
+        background: var(--ocp-dark);
+    }
+
+    .form-actions {
+        border-top-color: var(--ocp-gray-700);
+    }
+
+    .btn-submit {
+        background: var(--ocp-primary); /* Keep OCP Primary for consistency */
+    }
+
+    .btn-submit:hover {
+        background: var(--ocp-secondary);
+    }
+
+    .btn-cancel {
+        background: var(--ocp-gray-700);
+        color: var(--ocp-gray-100);
+        border-color: var(--ocp-gray-600);
+    }
+
+    .btn-cancel:hover {
+        background: var(--ocp-gray-600);
+        color: var(--ocp-white);
+        border-color: var(--ocp-gray-500);
+    }
+
+  .equipement-form{
+  max-width: 1400px; /* Reduced max-width */
+  margin: 0 auto;
+  padding: 1.5rem; /* Reduced padding */
+  font-family: var(--font-primary);
+  background: url('https://i.pinimg.com/736x/57/45/75/57457529d2dbdd326411cc4345e0e1dc.jpg') no-repeat center center/cover;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.2); /* Subtle overlay for readability */
+}
+}

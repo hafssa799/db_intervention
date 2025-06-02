@@ -1,0 +1,360 @@
+/* CreateDemande.css */
+
+/* Variables (if you're using them, define them here or ensure they are globally available) */
+/*
+:root {
+    --ocp-white: #ffffff;
+    --ocp-green: #28a745; 
+    --ocp-dark-gray: #333;
+    --ocp-gray: #ccc;
+    --ocp-light-gray: #f8f8f8;
+    --radius: 8px; 
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+}
+*/
+
+.demande-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff; /* Corresponds to .card background-color */
+    border-radius: 12px; /* Corresponds to .card border-radius */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Corresponds to .card box-shadow */
+    padding: 30px;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+.demande-form h2 {
+    color: #2c3e50; /* Corresponds to h2 color */
+    font-size: 2.2em; /* Corresponds to h2 font-size */
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: none; /* Remove previous border-bottom */
+    position: relative;
+    text-align: center; /* Corresponds to h2 text-align */
+    font-weight: 600; /* Corresponds to h2 font-weight */
+}
+
+.demande-form h2::after {
+    content: "";
+    position: absolute;
+    bottom: -1px; /* Adjust as needed for spacing from text */
+    left: 50%; /* Center the underline */
+    transform: translateX(-50%); /* Center the underline */
+    width: 60px; /* Corresponds to h2::after width */
+    height: 3px;
+    background-color: #007bff; /* Corresponds to h2::after background-color */
+    border-radius: 2px; /* Corresponds to h2::after border-radius */
+}
+
+.form-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #e0e0e0; /* Lighter, more subtle dashed border */
+}
+
+.form-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.form-section-title {
+    font-size: 1.2em; /* Slightly larger for better hierarchy */
+    color: #2c3e50; /* Consistent with heading colors */
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    font-weight: 600; /* Make section titles bolder */
+}
+
+.form-section-title::before {
+    content: "";
+    display: inline-block;
+    width: 10px; /* Slightly smaller dot */
+    height: 10px;
+    background-color: #007bff; /* Accent color for the dot */
+    margin-right: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.4); /* Add a subtle glow */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.demande-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333; /* Consistent with body color */
+    font-size: 0.95em;
+}
+
+.demande-form select,
+.demande-form textarea,
+.demande-form input[type="text"],
+.demande-form input[type="file"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #dcdcdc; /* Lighter border for inputs */
+    border-radius: 8px; /* Consistent rounded corners */
+    font-family: 'Segoe UI', 'Roboto', sans-serif; /* Consistent with general body font */
+    font-size: 1em; /* Slightly larger font size */
+    transition: all 0.3s ease; /* Consistent transition property */
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+.demande-form select:focus,
+.demande-form textarea:focus,
+.demande-form input[type="text"]:focus,
+.demande-form input[type="file"]:focus {
+    border-color: #007bff; /* Accent color on focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Softer shadow on focus */
+    outline: none;
+}
+
+.demande-form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23007bff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); /* Updated arrow color */
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
+}
+
+.demande-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.file-input-container {
+    position: relative;
+    margin-top: 10px;
+}
+
+.file-input-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    background-color: #f7f9fc; /* Lighter background for file input */
+    border: 1px dashed #b0b0b0; /* Softer dashed border */
+    border-radius: 8px; /* Consistent rounded corners */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: #555; /* Slightly darker text for better readability */
+}
+
+.file-input-label:hover {
+    border-color: #007bff; /* Accent color on hover */
+    background-color: rgba(0, 123, 255, 0.05); /* Lighter background on hover */
+}
+
+.file-input-label span {
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+.file-input {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+}
+
+.file-name {
+    margin-top: 10px;
+    font-size: 0.95em;
+    color: #007bff; /* Accent color for file name */
+    font-weight: 500;
+}
+
+.statut-equipement {
+    padding: 15px;
+    margin: 15px 0;
+    background-color: #e6f7ff; /* Light blue, similar to notifications */
+    border-left: 4px solid #007bff; /* Blue accent border */
+    border-radius: 8px; /* Consistent rounded corners */
+    color: #0056b3; /* Darker blue text */
+    font-size: 0.95em;
+}
+
+.statut-equipement strong {
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.priority-selector {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.priority-option {
+    flex: 1;
+    position: relative;
+}
+
+.priority-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none; /* Ensure it doesn't interfere with label clicks */
+}
+
+.priority-option label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 15px;
+    background-color: #f7f9fc; /* Light background for options */
+    border: 2px solid #dcdcdc; /* Lighter border */
+    border-radius: 8px; /* Consistent rounded corners */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #555; /* Default text color */
+}
+
+.priority-option input[type="radio"]:checked + label {
+    border-color: #007bff; /* Accent color on checked */
+    background-color: rgba(0, 123, 255, 0.08); /* Lighter background on checked */
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2); /* Subtle shadow for checked state */
+}
+
+.priority-option label:hover {
+    border-color: #a0d7ff; /* Lighter blue on hover */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow on hover */
+}
+
+.priority-option label .priority-icon {
+    font-size: 28px; /* Slightly larger icons */
+    margin-bottom: 10px;
+}
+
+.priority-option label .priority-text {
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.priority-option:nth-child(1) label .priority-icon {
+    color: #dc3545; /* Red for high priority */
+}
+
+.priority-option:nth-child(2) label .priority-icon {
+    color: #ffc107; /* Amber for medium priority */
+}
+
+.priority-option:nth-child(3) label .priority-icon {
+    color: #28a745; /* Green for low priority */
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 15px; /* Space between buttons */
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee; /* Lighter border */
+}
+
+.btn-cancel {
+    background-color: #e9ecef; /* Light gray for cancel */
+    color: #495057; /* Darker text color */
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px; /* Consistent rounded corners */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+.btn-cancel:hover {
+    background-color: #dee2e6; /* Darker gray on hover */
+    transform: translateY(-1px); /* Slight lift */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.demande-form button[type="submit"] {
+    background-color: #007bff; /* Primary action blue */
+    color: #ffffff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px; /* Consistent rounded corners */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Subtle shadow for buttons */
+}
+
+.demande-form button[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+}
+
+.demande-form button[type="submit"]::after {
+    content: "→";
+    margin-left: 8px;
+    font-size: 1.2em; /* Slightly larger arrow */
+}
+
+@media (max-width: 768px) {
+    .demande-form {
+        padding: 20px;
+        margin: 15px auto; /* Adjust margin for smaller screens */
+    }
+
+    .demande-form h2 {
+        font-size: 1.8em;
+    }
+    
+    .priority-selector {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+        justify-content: center; /* Center buttons when stacked */
+    }
+    
+    .btn-cancel, 
+    .demande-form button[type="submit"] {
+        width: 100%;
+        max-width: 300px; /* Limit width even when 100% */
+        margin: 0 auto; /* Center the buttons */
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .demande-form {
+        padding: 15px;
+    }
+
+    .demande-form h2 {
+        font-size: 1.5em;
+    }
+
+    .form-section-title {
+        font-size: 1.1em;
+    }
+
+    .demande-form label,
+    .demande-form select,
+    .demande-form textarea,
+    .demade-form input[type="text"],
+    .demande-form input[type="file"] {
+        font-size: 0.95em;
+        padding: 10px 12px;
+    }
+}

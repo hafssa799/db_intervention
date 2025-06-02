@@ -1,0 +1,169 @@
+/* Variables globales avec intégration de couleurs OCP */
+:root {
+  /* Anciennes couleurs OCP - obsolètes, mais conservées pour référence si besoin de dégradés spécifiques */
+  /* --ocp-primary: #00604B; */
+  /* --ocp-secondary: #008E5A; */
+  /* --ocp-tertiary: #0089C0; */
+
+  /* Nouvelles couleurs OCP basées sur la palette fournie */
+  --ocp-primary-form: var(--ocp-primary-600); /* Vert OCP principal pour les éléments du formulaire */
+  --ocp-secondary-form: var(--ocp-primary-700); /* Vert foncé OCP */
+  --ocp-accent-form: var(--ocp-primary-500); /* Vert clair OCP pour les accents/focus */
+
+  /* Couleurs de gris harmonisées avec la nouvelle palette */
+  --gray-form-light: var(--gray-100); /* Équivalent à --gray-200 ou --gray-100 du nouveau système */
+  --gray-form-medium: var(--gray-300); /* Équivalent à --gray-300 */
+  --gray-form-dark: var(--gray-800); /* Équivalent à --gray-800 */
+  --gray-form-text: var(--gray-700); /* Équivalent à --gray-700 pour le texte général */
+
+  /* Couleurs de statut réutilisées de la nouvelle palette */
+  --success-color: var(--success); /* success */
+  --warning-color: var(--warning); /* warning */
+  --danger-color: var(--error); /* error */
+  --info-color: var(--info); /* info */
+
+  /* Variables globales du nouveau système */
+  --radius-form: var(--radius-md); /* Utilise radius-md (0.5rem) */
+  --shadow-form: var(--shadow-md); /* Utilise shadow-md */
+  --shadow-form-focus: rgba(37, 99, 235, 0.25); /* Ombre de focus basée sur ocp-primary-500 */
+  --transition-form: var(--transition-base); /* Utilise transition-base */
+  --font-form: var(--font-primary); /* Police primaire pour les formulaires */
+  --text-form-base: var(--text-base); /* Taille de texte de base */
+  --text-form-sm: var(--text-sm); /* Petite taille de texte */
+  --text-form-lg: var(--text-lg); /* Grande taille de texte */
+  --space-form-1: var(--space-1);
+  --space-form-2: var(--space-2);
+  --space-form-3: var(--space-3);
+  --space-form-4: var(--space-4);
+  --space-form-5: var(--space-5);
+  --space-form-6: var(--space-6);
+  --space-form-8: var(--space-8);
+  --space-form-10: var(--space-10);
+}
+
+/* Style général des formulaires d'intervention */
+.create-intervention-container,
+.edit-intervention-container {
+  max-width: 800px;
+  margin: var(--space-form-10) auto; /* Utilise --space-10 */
+  background-color: var(--gray-50); /* Utilise gray-50 pour un fond très clair */
+  border-radius: var(--radius-form);
+  box-shadow: var(--shadow-lg); /* Une ombre plus prononcée */
+  padding: var(--space-form-8); /* Utilise --space-8 */
+  position: relative;
+  border: 1px solid var(--gray-200); /* Bordure légère */
+  animation: fadeIn 0.4s ease-out; /* Animation conservée */
+}
+
+/* En-tête du formulaire */
+.create-intervention-container h2,
+.edit-intervention-container h2 {
+  color: var(--ocp-primary-form);
+  margin-bottom: var(--space-form-6); /* Utilise --space-6 */
+  padding-bottom: var(--space-form-4); /* Utilise --space-4 */
+  border-bottom: 2px solid var(--ocp-primary-form);
+  font-size: var(--text-3xl); /* Plus grande taille de titre */
+  position: relative;
+  font-family: var(--font-display); /* Utilise la police d'affichage */
+  font-weight: 700;
+}
+
+.create-intervention-container h2::after,
+.edit-intervention-container h2::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background-color: var(--ocp-secondary-form);
+  border-radius: var(--radius-sm); /* Utilise radius-sm */
+}
+
+/* Style des formulaires */
+.create-intervention-form,
+.edit-intervention-form {
+  display: grid;
+  gap: var(--space-form-5); /* Utilise --space-5 */
+}
+
+/* Groupes de formulaires */
+.form-group {
+  margin-bottom: var(--space-form-2); /* Utilise --space-2 */
+  position: relative;
+}
+
+/* Labels des formulaires */
+.create-intervention-form label,
+.edit-intervention-form label {
+  display: block;
+  margin-bottom: var(--space-form-2); /* Utilise --space-2 */
+  font-weight: 600;
+  color: var(--gray-form-dark);
+  font-size: var(--text-form-sm); /* Utilise text-sm */
+  font-family: var(--font-form);
+}
+
+/* Style des champs de saisie */
+.create-intervention-form input,
+.create-intervention-form select,
+.edit-intervention-form input,
+.edit-intervention-form select {
+  width: 100%;
+  padding: var(--space-form-3) var(--space-form-4); /* Utilise space-3 et space-4 */
+  border: 1px solid var(--gray-form-medium);
+  border-radius: var(--radius-form);
+  font-size: var(--text-form-base); /* Utilise text-base */
+  background-color: var(--gray-50); /* Utilise gray-50 pour un fond clair */
+  transition: var(--transition-form);
+  color: var(--gray-form-dark);
+}
+
+.create-intervention-form input:focus,
+.create-intervention-form select:focus,
+.edit-intervention-form input:focus,
+.edit-intervention-form select:focus {
+  border-color: var(--ocp-accent-form);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--shadow-form-focus);
+}
+
+/* Style des selects */
+.create-intervention-form select,
+.edit-intervention-form select {
+  appearance: none;
+  /* Icône SVG mise à jour pour correspondre à la couleur du texte dark-gray */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d3142' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--space-form-4) center; /* Utilise space-4 */
+  background-size: var(--text-form-base); /* Taille de l'icône égale à la taille du texte de base */
+  padding-right: var(--space-form-8); /* Utilise space-8 */
+  cursor: pointer;
+}
+
+/* Boutons d'action */
+.btn-submit,
+.btn-save,
+.btn-cancel {
+  padding: var(--space-form-3) var(--space-form-5); /* Utilise space-3 et space-5 */
+  border-radius: var(--radius-form);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-form);
+  border: none;
+  font-size: var(--text-form-base); /* Utilise text-base */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-form-3); /* Utilise space-3 */
+  min-height: 44px; /* Hauteur minimale pour la consistance */
+  font-family: var(--font-form);
+}
+
+/* Bouton de soumission */
+.btn-submit,
+.btn-save {
+  background: linear-gradient(135deg, var(--ocp-primary-600), var(--ocp-primary-700));
+  color: white;
+  box-shadow: var(--shadow-md); /* Utilise shadow-md */
+}

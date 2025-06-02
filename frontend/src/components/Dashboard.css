@@ -1,0 +1,11 @@
+.dashboard-link {
+    display: inline-block;
+    margin: 10px 0;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.dashboard-link:hover {
+    text-decoration: underline;
+}

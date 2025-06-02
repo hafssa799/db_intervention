@@ -1,0 +1,257 @@
+/* Variables globales avec intégration de couleurs OCP */
+:root {
+  --ocp-primary: #009a44;
+  --ocp-secondary: #00743a;
+  --ocp-tertiary: #7bc142;
+  --ocp-light: #f8faf8;
+  --ocp-white: #ffffff;
+  --ocp-border: #c3decf;
+  --ocp-dark: #232b2d;
+  --ocp-gray: #6c757d;
+
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #d13438;
+  --info-color: #17a2b8;
+
+  --radius: 8px;
+  --shadow: rgba(0, 154, 68, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Conteneur principal des formulaires */
+.create-intervention-container,
+.edit-intervention-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background-color: var(--ocp-light);
+  border-radius: var(--radius);
+  box-shadow: 0 3px 15px var(--shadow);
+  padding: 30px;
+  position: relative;
+  border: 1px solid var(--ocp-border);
+}
+
+/* En-tête */
+.create-intervention-container h2,
+.edit-intervention-container h2 {
+  color: var(--ocp-primary);
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--ocp-primary);
+  font-size: 24px;
+  position: relative;
+}
+
+.create-intervention-container h2::after,
+.edit-intervention-container h2::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background-color: var(--ocp-secondary);
+  border-radius: 2px;
+}
+
+/* Formulaires */
+.create-intervention-form,
+.edit-intervention-form {
+  display: grid;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 5px;
+  position: relative;
+}
+
+.create-intervention-form label,
+.edit-intervention-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--ocp-dark);
+  font-size: 15px;
+}
+
+.create-intervention-form input,
+.create-intervention-form select,
+.edit-intervention-form input,
+.edit-intervention-form select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--ocp-border);
+  border-radius: var(--radius);
+  font-size: 15px;
+  background-color: var(--ocp-white);
+  transition: var(--transition);
+}
+
+.create-intervention-form input:focus,
+.create-intervention-form select:focus,
+.edit-intervention-form input:focus,
+.edit-intervention-form select:focus {
+  border-color: var(--ocp-tertiary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(123, 193, 66, 0.15);
+}
+
+/* Selects */
+.create-intervention-form select,
+.edit-intervention-form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23232b2d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 15px;
+  padding-right: 40px;
+}
+
+/* Boutons */
+.btn-submit,
+.btn-save,
+.btn-cancel {
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.btn-submit,
+.btn-save {
+  background-color: var(--ocp-primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 154, 68, 0.2);
+}
+
+.btn-submit:hover,
+.btn-save:hover {
+  background-color: var(--ocp-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 116, 58, 0.3);
+}
+
+.btn-cancel {
+  background-color: var(--ocp-light);
+  color: var(--ocp-dark);
+  border: 1px solid var(--ocp-border);
+  margin-right: 15px;
+}
+
+.btn-cancel:hover {
+  background-color: #e2ede5;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* Messages */
+.message {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: var(--radius);
+  font-weight: 500;
+}
+
+/* Utiliser des classes plutôt que :has() */
+.message-success {
+  background-color: rgba(0, 154, 68, 0.1);
+  color: #155724;
+  border-left: 4px solid var(--success-color);
+}
+
+.message-error {
+  background-color: rgba(209, 52, 56, 0.1);
+  color: #721c24;
+  border-left: 4px solid var(--danger-color);
+  margin-bottom: 20px;
+}
+
+/* Chargement */
+.loading {
+  text-align: center;
+  padding: 30px;
+  color: var(--ocp-primary);
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid var(--ocp-primary);
+  border-radius: 50%;
+  margin-right: 15px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Débogage */
+.debug-info {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: var(--ocp-light);
+  border: 1px solid var(--ocp-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  overflow-x: auto;
+  color: var(--ocp-gray);
+}
+
+.debug-info h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: var(--ocp-secondary);
+}
+
+.debug-info pre {
+  margin: 0;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--ocp-dark);
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+  .create-intervention-container,
+  .edit-intervention-container {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-cancel {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+.localisation-equipement {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
