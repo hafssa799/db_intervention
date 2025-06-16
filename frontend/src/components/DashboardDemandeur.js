@@ -19,7 +19,7 @@ function DashboardDemandeur() {
 
    useEffect(() => {
   // Appliquer le background à l'arrivée sur le composant
-  document.body.style.backgroundImage = "url('https://i.pinimg.com/736x/c3/e5/51/c3e551266e74a192c06e3a59056f3266.jpg')";
+  document.body.style.backgroundImage = "url('https://i.pinimg.com/736x/7e/33/e1/7e33e1916339a89c2e55bfb393299eb4.jpg')";
   document.body.style.backgroundSize = "cover";
   document.body.style.backgroundRepeat = "no-repeat";
   document.body.style.backgroundPosition = "center center";
@@ -41,121 +41,158 @@ function DashboardDemandeur() {
   };
 }, []);
 
-   
+   function generatePDFBlob(intervention) {
+    const doc = new jsPDF();
+    
+    // Palette de couleurs inspirée d'OCP
+    const primaryColor = '#2E7D32'; // Vert OCP foncé
+    const secondaryColor = '#4CAF50'; // Vert OCP clair
+    const accentColor = '#8BC34A';   // Vert lime
+    const darkText = '#263238';      // Gris très foncé
+    const lightText = '#607D8B';     // Gris moyen
+    const white = '#FFFFFF';
+    
+    // Dimensions utiles
+    const pageWidth = doc.internal.pageSize.width;
+    const margin = 15;
+    const contentWidth = pageWidth - 2 * margin;
+    let yPosition = 20;
+
+    // === En-tête avec logo (version texte) ===
+    doc.setFillColor(primaryColor);
+    doc.rect(0, 0, pageWidth, 60, 'F');
+    
+    // Texte "OCP" stylisé
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(white);
+    doc.text('OCP', margin, 30);
+    
+    // Sous-titre
+    doc.setFontSize(12);
+    doc.text('Office Chérifien des Phosphates', margin, 38);
+    
+    // Ligne de séparation
+    doc.setDrawColor(accentColor);
+    doc.setLineWidth(0.5);
+    doc.line(margin, 45, pageWidth - margin, 45);
+
+    // === Titre principal ===
+    yPosition = 70;
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(primaryColor);
+    doc.text('RAPPORT D\'INTERVENTION TECHNIQUE', pageWidth / 2, yPosition, { align: 'center' });
+    
+    // Référence de la demande
+    doc.setFontSize(14);
+    doc.setTextColor(secondaryColor);
+    doc.text(`Référence : INT-${intervention.id?.toString().padStart(5, '0') || 'N/A'}`, pageWidth / 2, yPosition + 10, { align: 'center' });
+
+    // === Section Informations Générales ===
+    yPosition += 25;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(white);
+    doc.setFillColor(secondaryColor);
+    doc.rect(margin, yPosition - 5, contentWidth, 8, 'F');
+    doc.text('1. INFORMATIONS GÉNÉRALES', margin + 5, yPosition);
+    
+    // Contenu
+    yPosition += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkText);
+    
+    // Fonction pour ajouter des lignes de données avec gestion des valeurs nulles
+    const addDataRow = (label, value, offset = 0) => {
+        const displayValue = value || 'Non spécifié';
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${label}:`, margin + offset, yPosition);
+        doc.setFont('helvetica', 'normal');
+        doc.text(displayValue, margin + offset + 30, yPosition);
+        yPosition += 6;
+    };
+    
+    addDataRow('Date de création', intervention.date ? formatDate(intervention.date) : 'Non spécifiée');
+    addDataRow('Statut', getStatusText(intervention.statusIntervention));
+    addDataRow('Priorité', intervention.priority);
+    
+    // Gestion sécurisée du demandeur
+    const demandeurName = intervention.idDemandeur 
+        ? `${intervention.idDemandeur.prenom || ''} ${intervention.idDemandeur.nom || ''}`.trim() 
+        : 'Non spécifié';
+    addDataRow('Demandeur', demandeurName);
+    
+    // === Section Description ===
+    yPosition += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(white);
+    doc.setFillColor(secondaryColor);
+    doc.rect(margin, yPosition - 5, contentWidth, 8, 'F');
+    doc.text('2. DESCRIPTION DE L\'INTERVENTION', margin + 5, yPosition);
+    
+    yPosition += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkText);
+    const description = intervention.description || 'Aucune description fournie';
+    const splitDescription = doc.splitTextToSize(description, contentWidth);
+    doc.text(splitDescription, margin, yPosition);
+    yPosition += splitDescription.length * 6 + 5;
+
+    // === Section Équipement ===
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(white);
+    doc.setFillColor(secondaryColor);
+    doc.rect(margin, yPosition - 5, contentWidth, 8, 'F');
+    doc.text('3. ÉQUIPEMENT CONCERNÉ', margin + 5, yPosition);
+    
+    yPosition += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkText);
+    
+    addDataRow('Type', intervention.equipement);
+    addDataRow('Statut', intervention.statusEquipement);
+    addDataRow('Localisation', intervention.localisation);
+    addDataRow('Numéro de série', intervention.numeroSerie || 'N/A');
+
+    // === Section Technicien ===
+    yPosition += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(white);
+    doc.setFillColor(secondaryColor);
+    doc.rect(margin, yPosition - 5, contentWidth, 8, 'F');
+    doc.text('4. TECHNICIEN ASSIGNÉ', margin + 5, yPosition);
+    
+    yPosition += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkText);
+    
+    addDataRow('Nom', intervention.technicien);
+    addDataRow('Matricule', intervention.matriculeTechnicien || 'N/A');
+    addDataRow('Date intervention', formatDate(intervention.dateIntervention || new Date()));
+
+    // === Pied de page ===
+    const footerY = doc.internal.pageSize.height - 20;
+    doc.setFontSize(10);
+    doc.setTextColor(lightText);
+    doc.setFont('helvetica', 'italic');
+    doc.text('Document généré automatiquement par le système de gestion des interventions OCP', 
+             pageWidth / 2, footerY, { align: 'center' });
+    
+    // Numéro de page
+    doc.text(`Page 1/1`, pageWidth - margin, footerY, { align: 'right' });
+
+    // Ajout d'un filigrane discret
+    doc.setFontSize(60);
+    doc.setTextColor(230, 230, 230); // Gris très clair
+    doc.setFont('helvetica', 'bold');
+    doc.text('OCP', pageWidth / 2, doc.internal.pageSize.height / 2, 
+            { align: 'center', angle: 45 });
+
+    return doc.output('blob');
+}
     // Fonction améliorée pour générer le PDF avec plus de détails
-    function generatePDFBlob(intervention) {
-        const doc = new jsPDF();
-        
-        const primaryColor = '#0056B3';
-        const secondaryColor = '#495057';
-        const accentColor = '#28A745';
-        const lightGray = '#E9ECEF';
-        
-        const pageWidth = doc.internal.pageSize.width;
-        const margin = 20;
-        let yPosition = 30;
-
-        // En-tête
-        doc.setFillColor(primaryColor);
-        doc.rect(0, 0, pageWidth, 20, 'F');
-        
-        doc.setFontSize(10);
-        doc.setTextColor(255, 255, 255);
-        doc.setFont('helvetica', 'bold');
-        doc.text('SYSTÈME DE GESTION DES INTERVENTIONS', margin, 13);
-        
-        doc.setTextColor(secondaryColor);
-        doc.setFont('helvetica', 'normal');
-
-        // Titre principal
-        yPosition = 40;
-        doc.setFontSize(24);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Rapport d\'Intervention Technique', pageWidth / 2, yPosition, { align: 'center' });
-        
-        yPosition += 10;
-        doc.setFontSize(16);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`Demande #${intervention.id}`, pageWidth / 2, yPosition, { align: 'center' });
-
-        // Ligne de séparation
-        yPosition += 15;
-        doc.setDrawColor(lightGray);
-        doc.setLineWidth(0.8);
-        doc.line(margin, yPosition, pageWidth - margin, yPosition);
-        
-        // Contenu détaillé
-        yPosition += 15;
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.text('1. Informations Générales', margin, yPosition);
-        
-        yPosition += 8;
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        
-        doc.text('Date de création:', margin, yPosition);
-        doc.text(formatDate(intervention.date), margin + 50, yPosition);
-        yPosition += 7;
-        
-        doc.text('Statut:', margin, yPosition);
-        doc.setTextColor(intervention.statusIntervention === 'sent' ? accentColor : secondaryColor);
-        doc.text(getStatusText(intervention.statusIntervention), margin + 50, yPosition);
-        doc.setTextColor(secondaryColor);
-        yPosition += 7;
-        
-        doc.text('Priorité:', margin, yPosition);
-        doc.text(intervention.priority, margin + 50, yPosition);
-        yPosition += 15;
-
-        // Description
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.text('2. Description de l\'Intervention', margin, yPosition);
-        yPosition += 8;
-        
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        const splitDescription = doc.splitTextToSize(intervention.description, pageWidth - 2 * margin);
-        doc.text(splitDescription, margin, yPosition);
-        yPosition += splitDescription.length * 6 + 15;
-
-        // Détails équipement
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.text('3. Détails de l\'Équipement', margin, yPosition);
-        yPosition += 8;
-        
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        
-        doc.text('Équipement:', margin, yPosition);
-        doc.text(intervention.equipement, margin + 50, yPosition);
-        yPosition += 7;
-        
-        doc.text('Statut équipement:', margin, yPosition);
-        doc.text(intervention.statusEquipement, margin + 50, yPosition);
-        yPosition += 7;
-        
-        doc.text('Localisation:', margin, yPosition);
-        doc.text(intervention.localisation, margin + 50, yPosition);
-        yPosition += 15;
-
-        // Technicien
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.text('4. Technicien Assigné', margin, yPosition);
-        yPosition += 8;
-        
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        
-        doc.text('Nom du technicien:', margin, yPosition);
-        doc.text(intervention.technicien, margin + 50, yPosition);
-        
-        return doc.output('blob');
-    }
-
+  
     const loadDemandes = async () => {
         setLoading(true);
         try {
@@ -557,7 +594,7 @@ function DashboardDemandeur() {
         <div className="container">
             <div className="header">
                 <h1>📄 Gestion des Demandes d'Intervention</h1>
-                <p>Système de suivi et de transfert des demandes vers l'administration</p>
+                
             </div>
 
             {/* Section Notifications - Affiche seulement les affectations */}
@@ -665,22 +702,8 @@ function DashboardDemandeur() {
                         <div className="empty-state-text">
                             {demandes.length === 0 ? 'Aucune demande trouvée' : 'Aucune demande avec ce filtre'}
                         </div>
-                        <p>
-                            {demandes.length === 0 
-                                ? 'Créez votre première demande d\'intervention.' 
-                                : 'Essayez un autre filtre ou actualisez les données.'
-                            }
-                        </p>
-                        <div>
-                            {demandes.length === 0 && (
-                                <button className="btn btn-info" onClick={() => navigate('/create-demande')}>
-                                    ➕ Créer une demande
-                                </button>
-                            )}
-                            <button className="btn btn-warning" onClick={refreshData}>
-                                🔄 Actualiser
-                            </button>
-                        </div>
+                        
+                        
                     </div>
                 ) : (
                     <div className="documents-grid">

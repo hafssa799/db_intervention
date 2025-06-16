@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.exp.ocp.model.Equipement;
 import com.exp.ocp.model.Intervention;
@@ -48,72 +49,97 @@ public class InterventionController {
     @Autowired
     private InterventionService interventionService;
 
-    // Création d'une intervention
+    // Création d'une intervention - CORRIGÉ
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<?> createIntervention(
             @RequestParam("equipementId") Long equipementId,
             @RequestParam("description") String description,
             @RequestParam("priorite") String priorite,
             @RequestParam("demandeurId") Long demandeurId,
-           @RequestParam(value = "localisation", required = false) String localisation,
-        @RequestParam(value = "dateDebut", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date dateDebut,
-        @RequestParam(value = "dateFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date dateFin,
-        @RequestParam(value = "cheminPDF", required = false) String cheminPDF,
-        @RequestParam(value = "cheminExcel", required = false) String cheminExcel){
+            @RequestParam(value = "localisation", required = false) String localisation,
+            @RequestParam(value = "dateDebut", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date dateDebut,
+            @RequestParam(value = "dateFin", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date dateFin,
+            @RequestParam(value = "cheminPDF", required = false) String cheminPDF,
+            @RequestParam(value = "cheminExcel", required = false) String cheminExcel,
+            @RequestParam(value = "fichier", required = false) MultipartFile fichier) {
 
         logger.info("Création d'une nouvelle intervention - demandeur: {}, équipement: {}", demandeurId, equipementId);
         
-        // Recherche des entités Utilisateur et Equipement
-        Utilisateur demandeur = utilisateurRepository.findById(demandeurId).orElse(null);
-        Equipement equipement = equipementRepository.findById(equipementId).orElse(null);
-
-        if (demandeur == null) {
-            logger.error("Utilisateur avec ID {} non trouvé", demandeurId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur non trouvé.");
-        }
-
-        if (equipement == null) {
-            logger.error("Équipement avec ID {} non trouvé", equipementId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Équipement non trouvé.");
-        }
-
-        // Création de l'intervention
-        Intervention intervention = new Intervention();
-        intervention.setDemandeur(demandeur);
-        intervention.setEquipement(equipement);
-        intervention.setDescription(description);
-        intervention.setPriorite(priorite);
-        intervention.setStatut(Intervention.StatutIntervention.EN_ATTENTE); // Default status
-intervention.setDateDemande(new Date());
-
-         if (localisation != null && !localisation.trim().isEmpty()) {
-        intervention.setLocalisation(localisation);
-    }
-    
-    if (dateDebut != null) {
-        intervention.setDateDebut(dateDebut);
-    }
-    
-    if (dateFin != null) {
-        intervention.setDateFin(dateFin);
-    }
-    
-    if (cheminPDF != null && !cheminPDF.trim().isEmpty()) {
-        intervention.setCheminPDF(cheminPDF);
-    }
-    
-    if (cheminExcel != null && !cheminExcel.trim().isEmpty()) {
-        intervention.setCheminExcel(cheminExcel);
-    }
-
-
         try {
+            // Validation des paramètres obligatoires
+            if (equipementId == null || demandeurId == null || 
+                description == null || description.trim().isEmpty() ||
+                priorite == null || priorite.trim().isEmpty()) {
+                logger.error("Paramètres obligatoires manquants");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Paramètres obligatoires manquants: equipementId, demandeurId, description et priorite sont requis.");
+            }
+            
+            // Recherche des entités Utilisateur et Equipement
+            Utilisateur demandeur = utilisateurRepository.findById(demandeurId).orElse(null);
+            Equipement equipement = equipementRepository.findById(equipementId).orElse(null);
+
+            if (demandeur == null) {
+                logger.error("Utilisateur avec ID {} non trouvé", demandeurId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur non trouvé.");
+            }
+
+            if (equipement == null) {
+                logger.error("Équipement avec ID {} non trouvé", equipementId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Équipement non trouvé.");
+            }
+
+            // Création de l'intervention
+            Intervention intervention = new Intervention();
+            intervention.setDemandeur(demandeur);
+            intervention.setEquipement(equipement);
+            intervention.setDescription(description.trim());
+            intervention.setPriorite(priorite.trim());
+            intervention.setStatut(Intervention.StatutIntervention.EN_ATTENTE); // Default status
+            intervention.setDateDemande(new Date());
+
+            // Définir la localisation (priorité à celle fournie, sinon celle de l'équipement)
+            if (localisation != null && !localisation.trim().isEmpty()) {
+                intervention.setLocalisation(localisation.trim());
+            } else if (equipement.getLocalisation() != null && !equipement.getLocalisation().trim().isEmpty()) {
+                intervention.setLocalisation(equipement.getLocalisation());
+            }
+            
+            // Gestion des autres champs optionnels
+            if (dateDebut != null) {
+                intervention.setDateDebut(dateDebut);
+            }
+            
+            if (dateFin != null) {
+                intervention.setDateFin(dateFin);
+            }
+            
+            if (cheminPDF != null && !cheminPDF.trim().isEmpty()) {
+                intervention.setCheminPDF(cheminPDF.trim());
+            }
+            
+            if (cheminExcel != null && !cheminExcel.trim().isEmpty()) {
+                intervention.setCheminExcel(cheminExcel.trim());
+            }
+
+            // Gestion du fichier uploadé (si nécessaire)
+            if (fichier != null && !fichier.isEmpty()) {
+                logger.info("Fichier reçu: {} (taille: {} bytes)", fichier.getOriginalFilename(), fichier.getSize());
+                // Ici vous pouvez ajouter la logique pour sauvegarder le fichier
+                // Par exemple: String cheminFichier = fileStorageService.saveFile(fichier);
+                // intervention.setCheminFichier(cheminFichier);
+            }
+
+            // Sauvegarde
             intervention = interventionRepository.save(intervention);
             logger.info("Intervention créée avec succès, ID: {}", intervention.getIdIntervention());
+            
             return ResponseEntity.status(HttpStatus.CREATED).body(intervention);
+            
         } catch (Exception e) {
             logger.error("Erreur lors de la sauvegarde de l'intervention", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la sauvegarde de l'intervention.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erreur lors de la sauvegarde de l'intervention: " + e.getMessage());
         }
     }
 
@@ -137,21 +163,36 @@ intervention.setDateDemande(new Date());
         }
     }
 
-    // Suppression d'une intervention
+    // Suppression d'une intervention - CORRIGÉ
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteIntervention(@PathVariable Long id) {
         logger.info("Suppression de l'intervention avec ID: {}", id);
         
         try {
-            interventionService.deleteIntervention(id);
+            // Vérifier que l'intervention existe
+            if (!interventionRepository.existsById(id)) {
+                logger.error("Intervention avec ID {} non trouvée pour suppression", id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Intervention non trouvée avec l'ID: " + id);
+            }
+            
+            // Utiliser le service si disponible, sinon supprimer directement
+            if (interventionService != null) {
+                interventionService.deleteIntervention(id);
+            } else {
+                interventionRepository.deleteById(id);
+            }
+            
+            logger.info("Intervention avec ID {} supprimée avec succès", id);
             return ResponseEntity.ok("Intervention supprimée avec succès");
+            
         } catch (RuntimeException e) {
             logger.error("Erreur lors de la suppression de l'intervention: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             logger.error("Erreur inattendue lors de la suppression de l'intervention", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erreur lors de la suppression de l'intervention.");
+                    .body("Erreur lors de la suppression de l'intervention: " + e.getMessage());
         }
     }
 
@@ -159,21 +200,32 @@ intervention.setDateDemande(new Date());
     @GetMapping
     public ResponseEntity<List<Intervention>> getAllInterventions() {
         logger.info("Récupération de toutes les interventions");
-        List<Intervention> interventions = interventionRepository.findAllByOrderByDateDemandeDesc();
-        logger.info("Nombre d'interventions trouvées: {}", interventions.size());
-        return ResponseEntity.ok(interventions);
+        try {
+            List<Intervention> interventions = interventionRepository.findAllByOrderByDateDemandeDesc();
+            logger.info("Nombre d'interventions trouvées: {}", interventions.size());
+            return ResponseEntity.ok(interventions);
+        } catch (Exception e) {
+            logger.error("Erreur lors de la récupération des interventions", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+        }
     }
 
     // Récupérer une intervention par ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getInterventionById(@PathVariable Long id) {
         logger.info("Récupération de l'intervention avec ID: {}", id);
-        Intervention intervention = interventionRepository.findById(id).orElse(null);
-        if (intervention == null) {
-            logger.warn("Intervention avec ID {} non trouvée", id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Intervention non trouvée.");
+        try {
+            Intervention intervention = interventionRepository.findById(id).orElse(null);
+            if (intervention == null) {
+                logger.warn("Intervention avec ID {} non trouvée", id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Intervention non trouvée.");
+            }
+            return ResponseEntity.ok(intervention);
+        } catch (Exception e) {
+            logger.error("Erreur lors de la récupération de l'intervention", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erreur lors de la récupération de l'intervention");
         }
-        return ResponseEntity.ok(intervention);
     }
     
     // Récupérer les interventions par demandeur
@@ -181,17 +233,22 @@ intervention.setDateDemande(new Date());
     public ResponseEntity<List<Intervention>> getInterventionsByDemandeur(@PathVariable Long idDemandeur) {
         logger.info("Récupération des interventions pour le demandeur ID: {}", idDemandeur);
         
-        // Vérifie si l'utilisateur existe
-        if (!utilisateurRepository.existsById(idDemandeur)) {
-            logger.error("Utilisateur demandeur avec ID {} non trouvé", idDemandeur);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        try {
+            // Vérifie si l'utilisateur existe
+            if (!utilisateurRepository.existsById(idDemandeur)) {
+                logger.error("Utilisateur demandeur avec ID {} non trouvé", idDemandeur);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+            }
+            
+            // Récupère les interventions
+            List<Intervention> interventions = interventionRepository.findByDemandeurIdUtilisateurOrderByDateDemandeDesc(idDemandeur);
+            logger.info("Nombre d'interventions trouvées pour demandeur {}: {}", idDemandeur, interventions.size());
+            
+            return ResponseEntity.ok(interventions);
+        } catch (Exception e) {
+            logger.error("Erreur lors de la récupération des interventions du demandeur", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
-        
-        // Récupère les interventions
-        List<Intervention> interventions = interventionRepository.findByDemandeurIdUtilisateurOrderByDateDemandeDesc(idDemandeur);
-        logger.info("Nombre d'interventions trouvées pour demandeur {}: {}", idDemandeur, interventions.size());
-        
-        return ResponseEntity.ok(interventions);
     }
     
     // Récupérer les interventions par technicien
@@ -199,9 +256,14 @@ intervention.setDateDemande(new Date());
     public ResponseEntity<List<Intervention>> getInterventionsByTechnicien(@PathVariable Long idTechnicien) {
         logger.info("Récupération des interventions pour le technicien ID: {}", idTechnicien);
         
-        List<Intervention> interventions = interventionRepository.findByTechnicienId(idTechnicien);
-        logger.info("Nombre d'interventions trouvées: {}", interventions.size());
-        
-        return ResponseEntity.ok(interventions);
+        try {
+            List<Intervention> interventions = interventionRepository.findByTechnicienId(idTechnicien);
+            logger.info("Nombre d'interventions trouvées: {}", interventions.size());
+            
+            return ResponseEntity.ok(interventions);
+        } catch (Exception e) {
+            logger.error("Erreur lors de la récupération des interventions du technicien", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+        }
     }
 }
