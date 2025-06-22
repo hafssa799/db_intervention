@@ -1,284 +1,1066 @@
-/* Variables de couleurs OCP */
+/* Importation des polices Google */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
+
+/* Variables CSS pour EquipementList OCP */
 :root {
-  --ocp-green: #12683b;
-  --ocp-orange: #f68b1f;
-  --ocp-blue: #003366;
-  --ocp-light-gray: #f5f5f5;
-  --ocp-dark-gray: #444;
-  --ocp-white: #ffffff;
-  --ocp-error: #d9534f;
-  --ocp-success: #5cb85c;
-  
-  /* OCP-inspired white and green for table - Refined */
-  --ocp-table-header-bg: var(--ocp-green);
-  --ocp-table-header-text: var(--ocp-white);
-  --ocp-table-row-even-bg: #e8f5e9; /* Lightest green for readability */
-  --ocp-table-row-odd-bg: var(--ocp-white);
-  --ocp-table-row-hover-bg: #dcedc8; /* Subtle hover effect */
-  --ocp-table-border-color: #a5d6a7;
-  
-  /* General UI enhancements */
-  --ocp-border-radius-large: 10px;
-  --ocp-border-radius-medium: 8px;
-  --ocp-border-radius-small: 6px;
-  --ocp-shadow-light: 0 2px 5px rgba(0, 0, 0, 0.08);
-  --ocp-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --ocp-transition-speed: 0.3s ease-in-out;
+  --ocp-admin-green: #099649;
+  --ocp-admin-green-light: #0ba852;
+  --ocp-admin-green-dark: #027a38;
+  --ocp-admin-sand: #d4a574;
+  --ocp-admin-sand-light: #e8c4a0;
+  --ocp-admin-turquoise: #4a9b8e;
+  --ocp-admin-grey: #2c3e50;
+  --ocp-admin-light-grey: #7f8c8d;
+  --ocp-admin-bg: #fefefe;
+  --ocp-admin-white: #ffffff;
+  --ocp-admin-border: rgba(3, 154, 71, 0.08);
+  --ocp-admin-shadow: rgba(3, 154, 71, 0.06);
+  --ocp-admin-text: #050505;
+  --ocp-admin-danger: #e74c3c;
+  --ocp-admin-warning: #f39c12;
+  --ocp-admin-success: #27ae60;
+  --ocp-admin-info: #3498db;
 }
 
-/* Styles de base - Professional typography */
-.equipement-list {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Added Roboto for a modern touch */
-  color: #333;
-  line-height: 1.6; /* Improved readability */
+/* Reset et styles généraux UNIQUEMENT pour EquipementList */
+.ocp-admin-app-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Header OCP amélioré - More refined shadow and border */
-.ocp-header {
+.ocp-admin-app-container {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: white;
+  line-height: 1.6;
+  background-color: var(--ocp-admin-bg);
+  min-height: 100vh;
+  font-weight: 400;
+}
+
+.ocp-admin-app-container a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Header EquipementList */
+.ocp-admin-header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: all 0.4s ease;
+  padding: 15px 0;
+}
+
+.ocp-admin-header-scrolled {
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  color: var(--ocp-admin-text);
+}
+
+.ocp-admin-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding: 20px;
-  background-color: var(--ocp-white);
-  border-bottom: 3px solid var(--ocp-orange); /* Slightly thicker border */
-  border-radius: var(--ocp-border-radius-medium);
-  box-shadow: var(--ocp-shadow-medium); /* Stronger, more professional shadow */
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.ocp-title-container {
-  text-align: left;
+.ocp-admin-logo img {
+  height: 45px;
+  transition: all 0.3s ease;
 }
 
-.ocp-main-title {
-  color: var(--ocp-green);
-  font-size: 2.2rem; /* Slightly larger title */
-  font-weight: 700;
-  margin: 0;
-  padding: 0;
-  letter-spacing: 0.7px; /* Enhanced letter spacing */
+.ocp-admin-nav-links {
+  display: flex;
+  gap: 40px;
 }
 
-.ocp-subtitle {
-  color: var(--ocp-blue);
-  font-size: 1.1rem; /* Slightly larger subtitle */
+.ocp-admin-nav-link {
+  color: var(--ocp-admin-text);
+  font-weight: 400;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 8px 0;
+}
+
+.ocp-admin-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--ocp-admin-green);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ocp-admin-nav-link:hover::after {
+  width: 100%;
+}
+
+.ocp-admin-nav-link:hover {
+  color: var(--ocp-admin-green);
+}
+
+.ocp-admin-language-switcher {
+  display: flex;
+  gap: 15px;
+  color: var(--ocp-admin-text);
   font-weight: 500;
-  margin: 10px 0 0 0;
-  padding: 0;
+  font-size: 14px;
 }
 
-.logo-container {
+.ocp-admin-language-switcher span {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.ocp-admin-language-switcher span.active,
+.ocp-admin-language-switcher span:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green);
+  background: rgba(3, 154, 71, 0.05);
+}
+
+.ocp-admin-search-icon {
+  color: var(--ocp-admin-text);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-search-icon:hover {
+  color: var(--ocp-admin-green);
+}
+
+/* Hero Section EquipementList */
+.ocp-admin-hero-section {
+  height: 70vh;
+  min-height: 400px;
+  background-image: url( "https://i.pinimg.com/736x/a2/64/c6/a264c60cfb1967d67aebcf7e0386a28d.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
   display: flex;
   align-items: center;
-  padding: 5px; /* Reduced padding for a tighter look */
-  background-color: var(--ocp-white);
-  border-radius: var(--ocp-border-radius-small);
-}
-
-.ocp-logo {
-  height: 65px; /* Slightly adjusted height */
-  width: auto;
-  max-width: 200px;
-  transition: transform var(--ocp-transition-speed);
-}
-
-.ocp-logo:hover {
-  transform: scale(1.03); /* Subtle scale effect */
-}
-
-/* Titres - More pronounced underline */
-.equipement-list h2 {
-  color: var(--ocp-green);
-  font-size: 1.9rem; /* Slightly larger heading */
-  margin-bottom: 1.8rem; /* Increased margin */
-  text-align: center;
-  padding-bottom: 12px; /* Increased padding */
+  color: #fff;
+  margin-top: 0;
+  padding-top: 70px;
   position: relative;
 }
 
-.equipement-list h2::after {
-  content: '';
+.ocp-admin-hero-section::before {
+  content: "";
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px; /* Wider underline */
-  height: 4px; /* Thicker underline */
-  background: var(--ocp-orange);
-  border-radius: 3px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
 }
 
-
-/* Section des filtres améliorée - Cleaner and more spacious */
-.filtres-container {
-  background-color: var(--ocp-white);
-  border-radius: var(--ocp-border-radius-large);
-  padding: 25px; /* More generous padding */
-  margin-bottom: 2.5rem; /* Increased margin */
-  box-shadow: var(--ocp-shadow-light); /* Softer shadow */
-  border: 1px solid #e0e0e0;
+.ocp-admin-hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 10;
 }
 
-.filtres-container h3 {
-  color: var(--ocp-blue);
-  margin-top: 0;
-  margin-bottom: 1.5rem; /* More spacing */
-  font-size: 1.35rem; /* Slightly larger heading */
+.ocp-admin-hero-content h1 {
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+  animation: ocp-admin-fadeInUp 1s ease-out;
+  color: rgb(227, 227, 151);
+  
+}
+
+.ocp-admin-hero-content p {
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-weight: 400;
+  opacity: 0.95;
+  animation: ocp-admin-fadeInUp 1s ease-out 0.2s both;
+  
+}
+
+.ocp-admin-hero-description {
+  max-width: 700px;
+  font-weight: 300;
+  line-height: 1.8;
+  font-size: 16px;
+  opacity: 0.9;
+  animation: ocp-admin-fadeInUp 1s ease-out 0.4s both;
+}
+
+@keyframes ocp-admin-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Breadcrumb EquipementList */
+.ocp-admin-breadcrumb {
+  background: var(--ocp-admin-white);
+  padding: 20px 0;
+  border-bottom: 1px solid var(--ocp-admin-border);
+}
+
+.ocp-admin-breadcrumb-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ocp-admin-light-grey);
+}
+
+.ocp-admin-breadcrumb a {
+  color: var(--ocp-admin-light-grey);
+  transition: color 0.3s ease;
+}
+
+.ocp-admin-breadcrumb a:hover {
+  color: var(--ocp-admin-green);
+}
+
+.ocp-admin-current {
+  color: var(--ocp-admin-green);
+  font-weight: 500;
+}
+
+/* Conteneur principal EquipementList */
+.ocp-admin-main-content {
+  margin-top: -50px;
+  position: relative;
+  z-index: 5;
+}
+
+.ocp-admin-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.ocp-admin-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.ocp-admin-title {
+  font-size: 32px;
+  margin-bottom: 0;
+  color: var(--ocp-admin-text);
   font-weight: 600;
 }
 
-.filtres-form {
-  display: grid; /* Using grid for better control over layout */
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsive grid */
-  gap: 1.8rem; /* Increased gap */
-}
-
-.filtre-group {
-  /* flex: 1; min-width: 200px; - replaced by grid */
-}
-
-.filtre-group label {
-  display: block;
-  margin-bottom: 10px; /* More spacing */
-  font-weight: 600; /* Bolder label */
-  color: var(--ocp-dark-gray);
-  font-size: 0.95rem; /* Slightly larger font size for labels */
-}
-
-.filtre-group select {
-  width: 100%;
-  padding: 12px 15px; /* More padding */
-  border: 1px solid #c0c0c0; /* Softer border color */
-  border-radius: var(--ocp-border-radius-small);
-  background-color: var(--ocp-white);
-  font-size: 15px; /* Slightly larger font size */
-  transition: all var(--ocp-transition-speed);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08); /* More defined inner shadow */
-}
-
-.filtre-group select:focus {
-  border-color: var(--ocp-orange);
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(246, 139, 31, 0.25); /* More prominent focus ring */
-}
-/* Boutons améliorés - Consistent and impactful */
-.filtres-actions {
+.ocp-admin-title-actions {
   display: flex;
-  gap: 15px; /* More spacing between buttons */
-  margin-top: 20px; /* Increased margin */
-  flex-basis: 100%;
-  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.btn {
+/* Barre de filtrage EquipementList */
+.ocp-admin-search-section {
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  padding: 40px;
+  border: 1px solid var(--ocp-admin-border);
+  box-shadow: 0 4px 20px var(--ocp-admin-shadow);
+  margin-bottom: 40px;
+  animation: ocp-admin-fadeIn 0.8s ease-out;
+}
+
+@keyframes ocp-admin-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ocp-admin-search-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.ocp-admin-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ocp-admin-filter-group label {
+  font-weight: 500;
+  color: var(--ocp-admin-text);
+  font-size: 14px;
+}
+
+.ocp-admin-filter-group input,
+.ocp-admin-filter-group select {
+  padding: 14px 16px;
+  border: 1px solid var(--ocp-admin-border);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--ocp-admin-white);
+  color: var(--ocp-admin-text);
+  transition: all 0.3s ease;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+}
+
+.ocp-admin-filter-group input:focus,
+.ocp-admin-filter-group select:focus {
+  border-color: var(--ocp-admin-green);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(3, 154, 71, 0.1);
+  transform: translateY(-1px);
+}
+
+.ocp-admin-search-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* Boutons EquipementList */
+.ocp-admin-btn {
+  padding: 12px 20px;
   border: none;
-  padding: 12px 22px; /* More padding for a bolder look */
-  border-radius: var(--ocp-border-radius-small);
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 600; /* Bolder text */
-  transition: all var(--ocp-transition-speed);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-family: "Inter", sans-serif;
   display: inline-flex;
   align-items: center;
-  gap: 10px; /* More spacing for icon/text */
-  font-size: 15px; /* Slightly larger font size */
-  box-shadow: var(--ocp-shadow-light); /* Soft shadow for all buttons */
+  gap: 8px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.btn-filter {
-  background-color: var(--ocp-green);
-  color: var(--ocp-white);
+.ocp-admin-btn-primary {
+  background: var(--ocp-admin-green);
+  color: white;
 }
 
-.btn-filter:hover {
-  background-color: #0e5a32;
-  transform: translateY(-2px); /* More pronounced lift */
-  box-shadow: 0 6px 12px rgba(18, 104, 59, 0.3); /* Stronger shadow on hover */
-}
-
-.btn-reset {
-  background-color: var(--ocp-orange);
-  color: var(--ocp-white);
-}
-
-.btn-reset:hover {
-  background-color: #e07c16;
+.ocp-admin-btn-primary:hover:not(:disabled) {
+  background: var(--ocp-admin-green-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(246, 139, 31, 0.3);
+  box-shadow: 0 6px 20px rgba(3, 154, 71, 0.2);
 }
 
-.btn-ajouter {
-  background-color: var(--ocp-green); /* Changed to OCP Green for consistency */
-  color: var(--ocp-white);
-  padding: 14px 28px; /* Larger button */
-  font-size: 1.05rem; /* Slightly larger font */
-  margin-bottom: 1.8rem; /* Increased margin */
-  border-radius: var(--ocp-border-radius-small);
-  box-shadow: 0 3px 8px rgba(18, 104, 59, 0.25); /* Adjusted shadow for green */
+.ocp-admin-btn-secondary {
+  background: var(--ocp-admin-light-grey);
+  color: white;
 }
 
-.btn-ajouter:hover {
-  background-color: #0e5a32; /* Darker green on hover */
-  transform: translateY(-3px); /* More pronounced lift */
-  box-shadow: 0 6px 15px rgba(18, 104, 59, 0.4);
-}
-/* Tableau amélioré - Clean, crisp, and professional */
-.table-equipements {
-  width: 100%;
-  border-collapse: separate; /* Keep separate for rounded corners */
-  border-spacing: 0;
-  margin-top: 1.8rem; /* Increased margin */
-  box-shadow: var(--ocp-shadow-medium); /* More prominent shadow */
-  border-radius: var(--ocp-border-radius-large);
-  overflow: hidden; /* Ensures rounded corners are applied */
-  border: 1px solid var(--ocp-table-border-color);
+.ocp-admin-btn-secondary:hover:not(:disabled) {
+  background: #6c7b7d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(127, 140, 141, 0.2);
 }
 
-.table-equipements th,
-.table-equipements td {
-  padding: 16px 20px; /* More padding for better readability */
-  text-align: left;
-  border-bottom: 1px solid var(--ocp-table-border-color);
+.ocp-admin-btn-edit {
+  background: var(--ocp-admin-turquoise);
+  color: white;
+  padding: 8px 12px;
+  font-size: 12px;
+  margin-right: 5px;
 }
 
-.table-equipements th {
-  background-color: var(--ocp-table-header-bg);
-  color: var(--ocp-table-header-text);
-  font-weight: 700; /* Bolder header text */
-  position: sticky;
+.ocp-admin-btn-edit:hover:not(:disabled) {
+  background: #3d8a7e;
+  transform: translateY(-1px);
+}
+
+.ocp-admin-btn-delete {
+  background: var(--ocp-admin-danger);
+  color: white;
+  padding: 8px 12px;
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.ocp-admin-btn-delete:hover:not(:disabled) {
+  background: #c0392b;
+  transform: translateY(-1px);
+}
+
+.ocp-admin-btn-export {
+  background: var(--ocp-admin-green);
+  color: white;
+  font-size: 12px;
+  padding: 6px 10px;
+  margin-right: 5px;
+}
+
+.ocp-admin-btn-export:hover:not(:disabled) {
+  background: var(--ocp-admin-green-dark);
+  transform: translateY(-1px);
+}
+
+.ocp-admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Statistiques EquipementList */
+.ocp-admin-filter-stats {
+  background: rgba(3, 154, 71, 0.03);
+  border: 1px solid rgba(3, 154, 71, 0.08);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  color: var(--ocp-admin-green-dark);
+  font-size: 14px;
+}
+
+.ocp-admin-filter-info {
+  margin-left: 15px;
+  font-style: italic;
+  color: var(--ocp-admin-light-grey);
+}
+
+/* Messages EquipementList */
+.ocp-admin-success-message {
+  background: rgba(39, 174, 96, 0.03);
+  color: var(--ocp-admin-success);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(39, 174, 96, 0.08);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ocp-admin-error-message {
+  background: rgba(231, 76, 60, 0.03);
+  color: var(--ocp-admin-danger);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(231, 76, 60, 0.08);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ocp-admin-loading-message,
+.ocp-admin-no-results-message {
+  text-align: center;
+  padding: 60px;
+  color: var(--ocp-admin-light-grey);
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  border: 1px solid var(--ocp-admin-border);
+  font-style: italic;
+  font-size: 15px;
+}
+
+.ocp-admin-loading-spinner {
+  width: 50px;
+  height: 50px;
+  margin: 40px auto;
+  border: 3px solid rgba(3, 154, 71, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--ocp-admin-green);
+  animation: ocp-admin-spin 1s linear infinite;
+}
+
+@keyframes ocp-admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal EquipementList */
+.ocp-admin-modal-overlay {
+  position: fixed;
   top: 0;
-  text-transform: uppercase; /* Uppercase for header text */
-  letter-spacing: 0.5px; /* Subtle letter spacing */
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: ocp-admin-fadeIn 0.3s ease-out;
 }
 
-.table-equipements tr:nth-child(even) {
-  background-color: var(--ocp-table-row-even-bg);
+.ocp-admin-modal {
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: ocp-admin-slideInFromTop 0.4s ease-out;
 }
 
-.table-equipements tr:nth-child(odd) {
-  background-color: var(--ocp-table-row-odd-bg);
+@keyframes ocp-admin-slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.table-equipements tr:hover {
-  background-color: var(--ocp-table-row-hover-bg);
-  cursor: pointer; /* Indicates interactivity */
+.ocp-admin-edit-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--ocp-admin-border);
 }
 
-/* Apply rounded corners to the first and last cells of the header and body */
-.table-equipements th:first-child {
-  border-top-left-radius: var(--ocp-border-radius-large);
+.ocp-admin-edit-form-header h3 {
+  font-size: 20px;
+  color: var(--ocp-admin-text);
+  font-weight: 600;
 }
 
-.table-equipements th:last-child {
-  border-top-right-radius: var(--ocp-border-radius-large);
+.ocp-admin-btn-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--ocp-admin-light-grey);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
 
-.table-equipements tr:last-child td:first-child {
-  border-bottom-left-radius: var(--ocp-border-radius-large);
+.ocp-admin-btn-close:hover {
+  color: var(--ocp-admin-green);
+  background: rgba(3, 154, 71, 0.05);
 }
 
-.table-equipements tr:last-child td:last-child {
-  border-bottom-right-radius: var(--ocp-border-radius-large);
+.ocp-admin-modal-body {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.ocp-admin-alert-icon {
+  font-size: 48px;
+  color: var(--ocp-admin-warning);
+  margin-bottom: 20px;
+}
+
+.ocp-admin-form-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.ocp-admin-btn-cancel {
+  background: var(--ocp-admin-light-grey);
+  color: white;
+  padding: 12px 24px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-btn-cancel:hover:not(:disabled) {
+  background: #6c7b7d;
+  transform: translateY(-2px);
+}
+
+/* Tableau EquipementList */
+.ocp-admin-table-container {
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px var(--ocp-admin-shadow);
+  margin: 40px 0;
+  border: 1px solid var(--ocp-admin-border);
+  animation: ocp-admin-fadeIn 1s ease-out;
+}
+
+.ocp-admin-styled-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.ocp-admin-styled-table thead {
+  background: var(--ocp-admin-white);
+  border-bottom: 2px solid var(--ocp-admin-border);
+}
+
+.ocp-admin-styled-table th {
+  padding: 24px 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ocp-admin-text);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--ocp-admin-border);
+}
+
+.ocp-admin-styled-table tbody tr {
+  background: var(--ocp-admin-white);
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(3, 154, 71, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.ocp-admin-styled-table tbody tr:hover {
+  background: rgba(3, 154, 71, 0.02);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(3, 154, 71, 0.05);
+}
+
+.ocp-admin-styled-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.ocp-admin-styled-table td {
+  padding: 20px;
+  vertical-align: middle;
+  font-weight: 400;
+  color: var(--ocp-admin-text);
+  border-bottom: 1px solid rgba(3, 154, 71, 0.03);
+}
+
+.ocp-admin-number-cell {
+  font-family: "Inter", monospace;
+  font-weight: 600;
+  text-align: right;
+  color: var(--ocp-admin-green);
+}
+
+/* Info équipement avec avatar */
+.ocp-admin-equipment-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ocp-admin-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ocp-admin-green);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* Statuts d'équipement */
+.ocp-admin-connection-status {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ocp-admin-online {
+  background: rgba(3, 154, 71, 0.1);
+  color: var(--ocp-admin-green);
+  border: 1px solid rgba(3, 154, 71, 0.2);
+}
+
+.ocp-admin-recent {
+  background: rgba(74, 155, 142, 0.1);
+  color: var(--ocp-admin-turquoise);
+  border: 1px solid rgba(74, 155, 142, 0.2);
+}
+
+.ocp-admin-old {
+  background: rgba(212, 165, 116, 0.1);
+  color: var(--ocp-admin-sand);
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+
+.ocp-admin-very-old {
+  background: rgba(127, 140, 141, 0.1);
+  color: var(--ocp-admin-light-grey);
+  border: 1px solid rgba(127, 140, 141, 0.2);
+}
+
+.ocp-admin-never-connected {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--ocp-admin-danger);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+/* État vide */
+.ocp-admin-empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  border: 1px solid var(--ocp-admin-border);
+}
+
+.ocp-admin-empty-state i {
+  font-size: 64px;
+  color: var(--ocp-admin-light-grey);
+  margin-bottom: 20px;
+}
+
+.ocp-admin-empty-state p {
+  font-size: 18px;
+  color: var(--ocp-admin-light-grey);
+  margin-bottom: 30px;
+}
+
+/* Footer EquipementList */
+.ocp-admin-footer {
+  background: var(--ocp-admin-green-dark);
+  color: white;
+  padding: 80px 0 30px;
+  margin-top: 100px;
+}
+
+.ocp-admin-footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 60px;
+  margin-bottom: 50px;
+}
+
+.ocp-admin-footer-logo img {
+  height: 50px;
+  margin-bottom: 30px;
+  filter: brightness(0) invert(1);
+}
+
+.ocp-admin-footer-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+}
+
+.ocp-admin-footer-column h4 {
+  font-size: 16px;
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: var(--ocp-admin-green-light);
+}
+
+.ocp-admin-footer-column a {
+  display: block;
+  margin-bottom: 12px;
+  opacity: 0.8;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-weight: 400;
+}
+
+.ocp-admin-footer-column a:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green-light);
+  transform: translateX(5px);
+}
+
+.ocp-admin-footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 25px 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.ocp-admin-social-icons {
+  display: flex;
+  gap: 20px;
+}
+
+.ocp-admin-social-icons a {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-social-icons a:hover {
+  background: var(--ocp-admin-green);
+  transform: translateY(-3px);
+}
+
+.ocp-admin-copyright {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+.ocp-admin-copyright a {
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-copyright a:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green-light);
+}
+
+/* Animations EquipementList */
+.ocp-admin-animate-slide-in {
+  animation: ocp-admin-slideInFromBottom 0.8s ease-out;
+}
+
+@keyframes ocp-admin-slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Effet de survol pour les lignes du tableau */
+.ocp-admin-styled-table tbody tr::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(3, 154, 71, 0.02), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+
+.ocp-admin-styled-table tbody tr:hover::after {
+  transform: translateX(100%);
+}
+
+/* Responsive EquipementList */
+@media (max-width: 1200px) {
+  .ocp-admin-container {
+    padding: 30px;
+  }
+
+  .ocp-admin-navbar {
+    padding: 0 30px;
+  }
+}
+
+@media (max-width: 992px) {
+  .ocp-admin-nav-links {
+    display: none;
+  }
+
+  .ocp-admin-search-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .ocp-admin-footer-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .ocp-admin-hero-content h1 {
+    font-size: 36px;
+  }
+
+  .ocp-admin-title-section {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .ocp-admin-title-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .ocp-admin-hero-content h1 {
+    font-size: 28px;
+  }
+
+  .ocp-admin-hero-content p {
+    font-size: 16px;
+  }
+
+  .ocp-admin-footer-bottom {
+    flex-direction: column;
+  }
+
+  .ocp-admin-styled-table {
+    font-size: 13px;
+  }
+
+  .ocp-admin-styled-table th,
+  .ocp-admin-styled-table td {
+    padding: 15px 12px;
+  }
+
+  .ocp-admin-container {
+    padding: 20px;
+  }
+
+  .ocp-admin-navbar {
+    padding: 0 20px;
+  }
+
+  .ocp-admin-title-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .ocp-admin-search-buttons {
+    justify-content: stretch;
+  }
+
+  .ocp-admin-search-buttons .ocp-admin-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .ocp-admin-form-buttons {
+    justify-content: stretch;
+  }
+
+  .ocp-admin-form-buttons button {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .ocp-admin-hero-content h1 {
+    font-size: 24px;
+  }
+
+  .ocp-admin-title {
+    font-size: 24px;
+  }
+
+  .ocp-admin-styled-table {
+    font-size: 12px;
+  }
+
+  .ocp-admin-styled-table th,
+  .ocp-admin-styled-table td {
+    padding: 10px 8px;
+  }
+
+  .ocp-admin-container {
+    padding: 15px;
+  }
+
+  .ocp-admin-search-section {
+    padding: 20px;
+  }
+}
+
+/* Améliorations d'accessibilité */
+.ocp-admin-btn:focus,
+.ocp-admin-filter-group input:focus,
+.ocp-admin-filter-group select:focus {
+  outline: 2px solid var(--ocp-admin-green);
+  outline-offset: 2px;
+}
+
+/* États de chargement pour les boutons */
+.ocp-admin-btn:disabled {
+  position: relative;
+  color: transparent;
+}
+
+.ocp-admin-btn:disabled::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: ocp-admin-spin 1s linear infinite;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Transitions fluides pour tous les éléments interactifs */
+.ocp-admin-app-container * {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }

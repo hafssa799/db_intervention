@@ -1,257 +1,965 @@
-/* Variables globales avec intégration de couleurs OCP */
+/* Importation des polices Google */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
+
+/* Variables CSS pour CreateDemande OCP */
 :root {
-  --ocp-primary: #009a44;
-  --ocp-secondary: #00743a;
-  --ocp-tertiary: #7bc142;
-  --ocp-light: #f8faf8;
-  --ocp-white: #ffffff;
-  --ocp-border: #c3decf;
-  --ocp-dark: #232b2d;
-  --ocp-gray: #6c757d;
-
-  --success-color: #28a745;
-  --warning-color: #ffc107;
-  --danger-color: #d13438;
-  --info-color: #17a2b8;
-
-  --radius: 8px;
-  --shadow: rgba(0, 154, 68, 0.1);
-  --transition: all 0.3s ease;
+  --ocp-admin-green: #099649;
+  --ocp-admin-green-light: #0ba852;
+  --ocp-admin-green-dark: #027a38;
+  --ocp-admin-sand: #d4a574;
+  --ocp-admin-sand-light: #e8c4a0;
+  --ocp-admin-turquoise: #4a9b8e;
+  --ocp-admin-grey: #2c3e50;
+  --ocp-admin-light-grey: #7f8c8d;
+  --ocp-admin-bg: #fefefe;
+  --ocp-admin-white: #ffffff;
+  --ocp-admin-border: rgba(3, 154, 71, 0.08);
+  --ocp-admin-shadow: rgba(3, 154, 71, 0.06);
+  --ocp-admin-text: #050505;
+  --ocp-admin-danger: #e74c3c;
+  --ocp-admin-warning: #f39c12;
+  --ocp-admin-success: #27ae60;
+  --ocp-admin-info: #3498db;
 }
 
-/* Conteneur principal des formulaires */
-.create-intervention-container,
-.edit-intervention-container {
-  max-width: 800px;
-  margin: 40px auto;
-  background-color: var(--ocp-light);
-  border-radius: var(--radius);
-  box-shadow: 0 3px 15px var(--shadow);
-  padding: 30px;
+/* Reset et styles généraux UNIQUEMENT pour CreateDemande */
+.ocp-admin-app-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.ocp-admin-app-container {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: white;
+  line-height: 1.6;
+  background-color: var(--ocp-admin-bg);
+  min-height: 100vh;
+  font-weight: 400;
+}
+
+.ocp-admin-app-container a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Header CreateDemande */
+.ocp-admin-header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: all 0.4s ease;
+  padding: 15px 0;
+}
+
+.ocp-admin-header-scrolled {
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  color: var(--ocp-admin-text);
+}
+
+.ocp-admin-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.ocp-admin-logo img {
+  height: 45px;
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-nav-links {
+  display: flex;
+  gap: 40px;
+}
+
+.ocp-admin-nav-link {
+  color: var(--ocp-admin-text);
+  font-weight: 400;
+  font-size: 15px;
+  transition: all 0.3s ease;
   position: relative;
-  border: 1px solid var(--ocp-border);
+  padding: 8px 0;
 }
 
-/* En-tête */
-.create-intervention-container h2,
-.edit-intervention-container h2 {
-  color: var(--ocp-primary);
-  margin-bottom: 25px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid var(--ocp-primary);
-  font-size: 24px;
-  position: relative;
-}
-
-.create-intervention-container h2::after,
-.edit-intervention-container h2::after {
+.ocp-admin-nav-link::after {
   content: "";
   position: absolute;
-  bottom: -2px;
+  bottom: 0;
   left: 0;
-  width: 80px;
-  height: 4px;
-  background-color: var(--ocp-secondary);
-  border-radius: 2px;
+  width: 0;
+  height: 1px;
+  background: var(--ocp-admin-green);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Formulaires */
-.create-intervention-form,
-.edit-intervention-form {
-  display: grid;
+.ocp-admin-nav-link:hover::after {
+  width: 100%;
+}
+
+.ocp-admin-nav-link:hover {
+  color: var(--ocp-admin-green);
+}
+
+.ocp-admin-language-switcher {
+  display: flex;
+  gap: 15px;
+  color: var(--ocp-admin-text);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.ocp-admin-language-switcher span {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.ocp-admin-language-switcher span.active,
+.ocp-admin-language-switcher span:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green);
+  background: rgba(3, 154, 71, 0.05);
+}
+
+.ocp-admin-search-icon {
+  color: var(--ocp-admin-text);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-search-icon:hover {
+  color: var(--ocp-admin-green);
+}
+
+/* Hero Section CreateDemande */
+.ocp-admin-hero-section-demande {
+  height: 60vh;
+  min-height: 350px;
+  background-image: url("https://sjc.microlink.io/hAslZqf6fMz51UNWoKre1CqRuzUjMTSNcbDAWwgiqTl81gf3Esd7Gqm7Q8F1n3iEPiXCe2kh3-WlwGm-divBgg.jpeg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin-top: 0;
+  padding-top: 70px;
+  position: relative;
+}
+
+.ocp-admin-hero-section-demande::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.ocp-admin-hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 10;
+}
+
+.ocp-admin-hero-content h1 {
+  font-size: 42px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+  animation: ocp-admin-fadeInUp 1s ease-out;
+}
+
+.ocp-admin-hero-content p {
+  font-size: 18px;
+  margin-bottom: 15px;
+  font-weight: 400;
+  opacity: 0.95;
+  animation: ocp-admin-fadeInUp 1s ease-out 0.2s both;
+}
+
+.ocp-admin-hero-description {
+  max-width: 650px;
+  font-weight: 300;
+  line-height: 1.8;
+  font-size: 15px;
+  opacity: 0.9;
+  animation: ocp-admin-fadeInUp 1s ease-out 0.4s both;
+}
+
+@keyframes ocp-admin-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Breadcrumb CreateDemande */
+.ocp-admin-breadcrumb {
+  background: var(--ocp-admin-white);
+  padding: 20px 0;
+  border-bottom: 1px solid var(--ocp-admin-border);
+}
+
+.ocp-admin-breadcrumb-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ocp-admin-light-grey);
+}
+
+.ocp-admin-breadcrumb a {
+  color: var(--ocp-admin-light-grey);
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.ocp-admin-breadcrumb a:hover {
+  color: var(--ocp-admin-green);
+}
+
+.ocp-admin-current {
+  color: var(--ocp-admin-green);
+  font-weight: 500;
+}
+
+/* Conteneur principal CreateDemande */
+.ocp-admin-main-content {
+  margin-top: -50px;
+  position: relative;
+  z-index: 5;
+}
+
+.ocp-admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.ocp-admin-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
-.form-group {
-  margin-bottom: 5px;
+.ocp-admin-title {
+  font-size: 32px;
+  margin-bottom: 0;
+  color: var(--ocp-admin-text);
+  font-weight: 600;
+}
+
+.ocp-admin-title-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Messages CreateDemande */
+.ocp-admin-success-message {
+  background: rgba(39, 174, 96, 0.03);
+  color: var(--ocp-admin-success);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(39, 174, 96, 0.08);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ocp-admin-error-message {
+  background: rgba(231, 76, 60, 0.03);
+  color: var(--ocp-admin-danger);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(231, 76, 60, 0.08);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ocp-admin-loading-message {
+  text-align: center;
+  padding: 60px;
+  color: var(--ocp-admin-light-grey);
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  border: 1px solid var(--ocp-admin-border);
+  font-style: italic;
+  font-size: 15px;
+}
+
+.ocp-admin-loading-spinner {
+  width: 50px;
+  height: 50px;
+  margin: 40px auto;
+  border: 3px solid rgba(3, 154, 71, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--ocp-admin-green);
+  animation: ocp-admin-spin 1s linear infinite;
+}
+
+@keyframes ocp-admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Boutons CreateDemande */
+.ocp-admin-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-family: "Inter", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ocp-admin-btn-secondary {
+  background: var(--ocp-admin-light-grey);
+  color: white;
+}
+
+.ocp-admin-btn-secondary:hover:not(:disabled) {
+  background: #6c7b7d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(127, 140, 141, 0.2);
+}
+
+.ocp-admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Formulaire CreateDemande */
+.ocp-admin-form-container {
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  padding: 0;
+  border: 1px solid var(--ocp-admin-border);
+  box-shadow: 0 4px 20px var(--ocp-admin-shadow);
+  animation: ocp-admin-fadeIn 0.8s ease-out;
+  overflow: hidden;
+}
+
+@keyframes ocp-admin-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ocp-admin-form-header {
+  background: linear-gradient(135deg, var(--ocp-admin-green), var(--ocp-admin-green-light));
+  color: white;
+  padding: 30px 40px;
+  text-align: center;
+}
+
+.ocp-admin-form-header h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.ocp-admin-form-header p {
+  font-size: 16px;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.ocp-admin-create-form {
+  padding: 40px;
+}
+
+/* Sections du formulaire */
+.ocp-admin-form-section {
+  margin-bottom: 40px;
+  padding: 30px;
+  background: rgba(3, 154, 71, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(3, 154, 71, 0.08);
+}
+
+.ocp-admin-form-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ocp-admin-text);
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--ocp-admin-green);
+}
+
+.ocp-admin-form-section-title i {
+  color: var(--ocp-admin-green);
+  font-size: 20px;
+}
+
+.ocp-admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.ocp-admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ocp-admin-full-width {
+  grid-column: 1 / -1;
+}
+
+.ocp-admin-form-group label {
+  font-weight: 500;
+  color: var(--ocp-admin-text);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ocp-admin-form-group label i {
+  color: var(--ocp-admin-green);
+  width: 16px;
+}
+
+.ocp-admin-form-group input,
+.ocp-admin-form-group select,
+.ocp-admin-form-group textarea {
+  padding: 14px 16px;
+  border: 1px solid var(--ocp-admin-border);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--ocp-admin-white);
+  color: var(--ocp-admin-text);
+  transition: all 0.3s ease;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+}
+
+.ocp-admin-form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.ocp-admin-form-group input:focus,
+.ocp-admin-form-group select:focus,
+.ocp-admin-form-group textarea:focus {
+  border-color: var(--ocp-admin-green);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(3, 154, 71, 0.1);
+  transform: translateY(-1px);
+}
+
+.ocp-admin-form-group input:disabled,
+.ocp-admin-form-group select:disabled,
+.ocp-admin-form-group textarea:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Statut badge */
+.ocp-admin-status-badge {
+  font-weight: 600;
+  text-align: center;
+  border-radius: 20px;
+  padding: 8px 16px;
+}
+
+.status-success {
+  background: rgba(39, 174, 96, 0.1);
+  color: var(--ocp-admin-success);
+  border: 1px solid rgba(39, 174, 96, 0.2);
+}
+
+.status-error {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--ocp-admin-danger);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+/* Sélecteur de priorité */
+.ocp-admin-priority-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.ocp-admin-priority-option {
   position: relative;
 }
 
-.create-intervention-form label,
-.edit-intervention-form label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: var(--ocp-dark);
-  font-size: 15px;
+.ocp-admin-priority-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.create-intervention-form input,
-.create-intervention-form select,
-.edit-intervention-form input,
-.edit-intervention-form select {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid var(--ocp-border);
-  border-radius: var(--radius);
-  font-size: 15px;
-  background-color: var(--ocp-white);
-  transition: var(--transition);
-}
-
-.create-intervention-form input:focus,
-.create-intervention-form select:focus,
-.edit-intervention-form input:focus,
-.edit-intervention-form select:focus {
-  border-color: var(--ocp-tertiary);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(123, 193, 66, 0.15);
-}
-
-/* Selects */
-.create-intervention-form select,
-.edit-intervention-form select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23232b2d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 15px center;
-  background-size: 15px;
-  padding-right: 40px;
-}
-
-/* Boutons */
-.btn-submit,
-.btn-save,
-.btn-cancel {
-  padding: 12px 20px;
-  border-radius: var(--radius);
-  font-weight: 600;
+.ocp-admin-priority-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 15px;
+  border: 2px solid var(--ocp-admin-border);
+  border-radius: 12px;
   cursor: pointer;
-  transition: var(--transition);
-  border: none;
-  font-size: 15px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.btn-submit,
-.btn-save {
-  background-color: var(--ocp-primary);
-  color: white;
-  box-shadow: 0 4px 10px rgba(0, 154, 68, 0.2);
-}
-
-.btn-submit:hover,
-.btn-save:hover {
-  background-color: var(--ocp-secondary);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0, 116, 58, 0.3);
-}
-
-.btn-cancel {
-  background-color: var(--ocp-light);
-  color: var(--ocp-dark);
-  border: 1px solid var(--ocp-border);
-  margin-right: 15px;
-}
-
-.btn-cancel:hover {
-  background-color: #e2ede5;
-}
-
-.form-buttons {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-/* Messages */
-.message {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: var(--radius);
-  font-weight: 500;
-}
-
-/* Utiliser des classes plutôt que :has() */
-.message-success {
-  background-color: rgba(0, 154, 68, 0.1);
-  color: #155724;
-  border-left: 4px solid var(--success-color);
-}
-
-.message-error {
-  background-color: rgba(209, 52, 56, 0.1);
-  color: #721c24;
-  border-left: 4px solid var(--danger-color);
-  margin-bottom: 20px;
-}
-
-/* Chargement */
-.loading {
+  transition: all 0.3s ease;
+  background: var(--ocp-admin-white);
   text-align: center;
-  padding: 30px;
-  color: var(--ocp-primary);
-  font-size: 18px;
+}
+
+.ocp-admin-priority-label:hover {
+  border-color: var(--ocp-admin-green);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(3, 154, 71, 0.1);
+}
+
+.ocp-admin-priority-option input[type="radio"]:checked + .ocp-admin-priority-label {
+  border-color: var(--ocp-admin-green);
+  background: rgba(3, 154, 71, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(3, 154, 71, 0.15);
+}
+
+.ocp-admin-priority-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.ocp-admin-priority-text {
+  font-weight: 600;
+  color: var(--ocp-admin-text);
+  margin-bottom: 4px;
+}
+
+.ocp-admin-priority-desc {
+  font-size: 12px;
+  color: var(--ocp-admin-light-grey);
+}
+
+/* Upload de fichier */
+.ocp-admin-file-input-container {
+  position: relative;
+}
+
+.ocp-admin-file-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ocp-admin-file-input-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  border: 2px dashed var(--ocp-admin-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(3, 154, 71, 0.02);
+  text-align: center;
+}
+
+.ocp-admin-file-input-label:hover {
+  border-color: var(--ocp-admin-green);
+  background: rgba(3, 154, 71, 0.05);
+  transform: translateY(-2px);
+}
+
+.ocp-admin-file-input-label i {
+  font-size: 32px;
+  color: var(--ocp-admin-green);
+  margin-bottom: 10px;
+}
+
+.ocp-admin-file-input-label span:first-of-type {
   font-weight: 500;
+  color: var(--ocp-admin-text);
+  margin-bottom: 5px;
+}
+
+.ocp-admin-file-formats {
+  font-size: 12px;
+  color: var(--ocp-admin-light-grey);
+}
+
+.ocp-admin-file-selected {
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: rgba(39, 174, 96, 0.1);
+  border-radius: 8px;
+  color: var(--ocp-admin-success);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ocp-admin-file-selected i {
+  color: var(--ocp-admin-success);
+}
+
+/* Boutons du formulaire */
+.ocp-admin-form-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding-top: 30px;
+  border-top: 1px solid var(--ocp-admin-border);
+}
+
+.ocp-admin-btn-submit {
+  background: var(--ocp-admin-green);
+  color: white;
+  padding: 14px 28px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ocp-admin-btn-submit:hover:not(:disabled) {
+  background: var(--ocp-admin-green-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(3, 154, 71, 0.2);
+}
+
+.ocp-admin-btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ocp-admin-btn-cancel {
+  background: var(--ocp-admin-light-grey);
+  color: white;
+  padding: 14px 28px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ocp-admin-btn-cancel:hover:not(:disabled) {
+  background: #6c7b7d;
+  transform: translateY(-2px);
+}
+
+/* Footer CreateDemande */
+.ocp-admin-footer {
+  background: var(--ocp-admin-green-dark);
+  color: white;
+  padding: 80px 0 30px;
+  margin-top: 100px;
+}
+
+.ocp-admin-footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 60px;
+  margin-bottom: 50px;
+}
+
+.ocp-admin-footer-logo img {
+  height: 50px;
+  margin-bottom: 30px;
+  filter: brightness(0) invert(1);
+}
+
+.ocp-admin-footer-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+}
+
+.ocp-admin-footer-column h4 {
+  font-size: 16px;
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: var(--ocp-admin-green-light);
+}
+
+.ocp-admin-footer-column a {
+  display: block;
+  margin-bottom: 12px;
+  opacity: 0.8;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-weight: 400;
+}
+
+.ocp-admin-footer-column a:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green-light);
+  transform: translateX(5px);
+}
+
+.ocp-admin-footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 25px 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.ocp-admin-social-icons {
+  display: flex;
+  gap: 20px;
+}
+
+.ocp-admin-social-icons a {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.loading::before {
-  content: "";
-  width: 20px;
-  height: 20px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid var(--ocp-primary);
   border-radius: 50%;
-  margin-right: 15px;
-  animation: spin 1s linear infinite;
+  transition: all 0.3s ease;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.ocp-admin-social-icons a:hover {
+  background: var(--ocp-admin-green);
+  transform: translateY(-3px);
 }
 
-/* Débogage */
-.debug-info {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: var(--ocp-light);
-  border: 1px solid var(--ocp-border);
-  border-radius: var(--radius);
+.ocp-admin-copyright {
+  display: flex;
+  align-items: center;
+  gap: 20px;
   font-size: 14px;
-  overflow-x: auto;
-  color: var(--ocp-gray);
+  opacity: 0.8;
+  font-weight: 400;
 }
 
-.debug-info h3 {
-  margin-top: 0;
-  font-size: 16px;
-  color: var(--ocp-secondary);
+.ocp-admin-copyright a {
+  transition: all 0.3s ease;
 }
 
-.debug-info pre {
-  margin: 0;
-  font-family: monospace;
-  font-size: 13px;
-  color: var(--ocp-dark);
+.ocp-admin-copyright a:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green-light);
 }
 
-/* Responsivité */
-@media (max-width: 768px) {
-  .create-intervention-container,
-  .edit-intervention-container {
-    padding: 20px;
-    margin: 20px;
+/* Animations CreateDemande */
+.ocp-admin-animate-slide-in {
+  animation: ocp-admin-slideInFromBottom 0.8s ease-out;
+}
+
+@keyframes ocp-admin-slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive CreateDemande */
+@media (max-width: 1200px) {
+  .ocp-admin-container {
+    padding: 30px;
   }
 
-  .form-buttons {
+  .ocp-admin-navbar {
+    padding: 0 30px;
+  }
+
+  .ocp-admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ocp-admin-priority-selector {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 992px) {
+  .ocp-admin-nav-links {
+    display: none;
+  }
+
+  .ocp-admin-footer-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .ocp-admin-hero-content h1 {
+    font-size: 32px;
+  }
+
+  .ocp-admin-title-section {
     flex-direction: column;
-    align-items: stretch;
+    gap: 20px;
+    align-items: flex-start;
   }
 
-  .btn-cancel {
-    margin-right: 0;
-    margin-bottom: 10px;
+  .ocp-admin-title-actions {
+    width: 100%;
+    justify-content: flex-start;
   }
 }
-.localisation-equipement {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #333;
+
+@media (max-width: 768px) {
+  .ocp-admin-hero-content h1 {
+    font-size: 28px;
+  }
+
+  .ocp-admin-hero-content p {
+    font-size: 16px;
+  }
+
+  .ocp-admin-footer-bottom {
+    flex-direction: column;
+  }
+
+  .ocp-admin-container {
+    padding: 20px;
+  }
+
+  .ocp-admin-navbar {
+    padding: 0 20px;
+  }
+
+  .ocp-admin-create-form {
+    padding: 30px 20px;
+  }
+
+  .ocp-admin-form-header {
+    padding: 25px 20px;
+  }
+
+  .ocp-admin-form-section {
+    padding: 20px;
+  }
+
+  .ocp-admin-form-buttons {
+    justify-content: stretch;
+  }
+
+  .ocp-admin-form-buttons button {
+    flex: 1;
+    justify-content: center;
+  }
 }
 
+@media (max-width: 480px) {
+  .ocp-admin-hero-content h1 {
+    font-size: 24px;
+  }
+
+  .ocp-admin-title {
+    font-size: 24px;
+  }
+
+  .ocp-admin-container {
+    padding: 15px;
+  }
+
+  .ocp-admin-create-form {
+    padding: 20px 15px;
+  }
+
+  .ocp-admin-form-header {
+    padding: 20px 15px;
+  }
+
+  .ocp-admin-form-section {
+    padding: 15px;
+  }
+}
+
+/* Améliorations d'accessibilité */
+.ocp-admin-btn:focus,
+.ocp-admin-form-group input:focus,
+.ocp-admin-form-group select:focus,
+.ocp-admin-form-group textarea:focus {
+  outline: 2px solid var(--ocp-admin-green);
+  outline-offset: 2px;
+}
+
+/* Transitions fluides pour tous les éléments interactifs */
+.ocp-admin-app-container * {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}

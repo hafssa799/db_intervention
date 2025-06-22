@@ -1,607 +1,748 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { jsPDF } from 'jspdf';
-import * as XLSX from 'xlsx';
-import { Link } from 'react-router-dom';
-import './InterventionList.css';
+"use client"
+
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { jsPDF } from 'jspdf'
+import * as XLSX from 'xlsx'
+import { Link } from 'react-router-dom'
+import moment from 'moment'
+import autoTable from 'jspdf-autotable'
+import './InterventionList.css'
 
 const InterventionList = () => {
-  const [interventions, setInterventions] = useState([]);
-  const [allInterventions, setAllInterventions] = useState([]);
-  const [filtreStatut, setFiltreStatut] = useState('');
-  const [utilisateurs, setUtilisateurs] = useState({});
-  const [equipements, setEquipements] = useState({});
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [interventions, setInterventions] = useState([])
+  const [filteredInterventions, setFilteredInterventions] = useState([])
+  const [allInterventions, setAllInterventions] = useState([])
+  const [utilisateurs, setUtilisateurs] = useState({})
+  const [equipements, setEquipements] = useState({})
+  const [scrolled, setScrolled] = useState(false)
+  const [currentLanguage, setCurrentLanguage] = useState("FR")
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [successMessage, setSuccessMessage] = useState("")
+  const [confirmDelete, setConfirmDelete] = useState(null)
+
+  const [searchParams, setSearchParams] = useState({
+    searchField: "description",
+    searchValue: "",
+    statusFilter: "",
+  })
+
+  const api = axios.create({
+    baseURL: "http://localhost:8083",
+    headers: { "Content-Type": "application/json" },
+  })
+
+  // Gestionnaire de défilement pour l'animation de la navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    fetchData()
+    fetchUtilisateurs()
+    fetchEquipements()
+  }, [])
+
+  useEffect(() => {
+    applyFilters()
+  }, [allInterventions, searchParams])
+
+  // Effet pour les messages de succès - disparition après 3 secondes
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage("")
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [successMessage])
+
+  // Effet pour les messages d'erreur - disparition après 3 secondes
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError("")
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [error])
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const response = await api.get("/api/interventions")
+      setAllInterventions(response.data || [])
+      setIsLoading(false)
+    } catch (err) {
+      console.error("Erreur lors du chargement des interventions:", err)
+      setError("Erreur lors du chargement des interventions: " + (err.response?.data?.message || err.message))
+      setIsLoading(false)
+    }
+  }
 
   const fetchUtilisateurs = async () => {
     try {
-      const res = await axios.get('http://localhost:8083/api/utilisateurs');
+      const res = await api.get('/api/utilisateurs')
       const usersMap = res.data.reduce((acc, user) => {
-        acc[user.idUtilisateur] = user;
-        return acc;
-      }, {});
-      setUtilisateurs(usersMap);
+        acc[user.idUtilisateur] = user
+        return acc
+      }, {})
+      setUtilisateurs(usersMap)
     } catch (err) {
-      console.error('Erreur chargement utilisateurs :', err);
-      setError('Erreur lors du chargement des utilisateurs');
+      console.error('Erreur chargement utilisateurs :', err)
     }
-  };
+  }
 
   const fetchEquipements = async () => {
     try {
-      const res = await axios.get('http://localhost:8083/api/equipements');
+      const res = await api.get('/api/equipements')
       const eqMap = res.data.reduce((acc, eq) => {
-        acc[eq.idEquipement] = eq;
-        return acc;
-      }, {});
-      setEquipements(eqMap);
+        acc[eq.idEquipement] = eq
+        return acc
+      }, {})
+      setEquipements(eqMap)
     } catch (err) {
-      console.error('Erreur chargement équipements :', err);
-      setError('Erreur lors du chargement des équipements');
+      console.error('Erreur chargement équipements :', err)
     }
-  };
+  }
 
-  const [refresh, setRefresh] = useState(false);
+  const applyFilters = () => {
+    let filtered = [...allInterventions]
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get('http://localhost:8083/api/interventions');
-      setAllInterventions(res.data);
-      applyFilters(res.data);
-    } catch (err) {
-      console.error('Erreur chargement interventions :', err);
-      setError('Erreur lors du chargement des interventions');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fonction qui filtre les interventions selon les critères
-  const applyFilters = (data) => {
-    let filteredData = [...data];
-    
     // Filtre par statut
-    if (filtreStatut) {
-      filteredData = filteredData.filter(interv => interv.statut === filtreStatut);
+    if (searchParams.statusFilter && searchParams.statusFilter.trim() !== "") {
+      filtered = filtered.filter((intervention) => intervention.statut === searchParams.statusFilter)
     }
-    
+
     // Filtre par terme de recherche
-    if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase().trim();
-      filteredData = filteredData.filter(interv => 
-        // Recherche par ID
-        interv.idIntervention.toString().includes(term) ||
-        // Recherche par description
-        (interv.description && interv.description.toLowerCase().includes(term)) ||
-        // Recherche par technicien
-        (interv.technicien && 
-          (`${interv.technicien.prenom} ${interv.technicien.nom}`).toLowerCase().includes(term)) ||
-        // Recherche par demandeur
-        (interv.demandeur && 
-          (`${interv.demandeur.prenom} ${interv.demandeur.nom}`).toLowerCase().includes(term)) ||
-        // Recherche par équipement
-        (interv.equipement && interv.equipement.typeEquipement.toLowerCase().includes(term))
-      );
+    if (searchParams.searchValue && searchParams.searchValue.trim() !== "") {
+      const searchTerm = searchParams.searchValue.toLowerCase().trim()
+
+      filtered = filtered.filter((intervention) => {
+        if (searchParams.searchField === "description") {
+          return (intervention.description || "").toLowerCase().includes(searchTerm)
+        } else if (searchParams.searchField === "technicien") {
+          const technicienName = intervention.technicien 
+            ? `${intervention.technicien.prenom || ""} ${intervention.technicien.nom || ""}`.toLowerCase()
+            : ""
+          return technicienName.includes(searchTerm)
+        } else if (searchParams.searchField === "equipement") {
+          return (intervention.equipement?.typeEquipement || "").toLowerCase().includes(searchTerm)
+        }
+        return true
+      })
     }
-    
-    setInterventions(filteredData);
-  };
 
-  // Appliquer les filtres à chaque changement de statut ou terme de recherche
-  useEffect(() => {
-    if (allInterventions.length > 0) {
-      applyFilters(allInterventions);
+    setFilteredInterventions(filtered)
+  }
+
+  const handleSearchChange = (e) => {
+    const { name, value } = e.target
+    setSearchParams((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    applyFilters()
+  }
+
+  const resetFilters = () => {
+    setSearchParams({ searchField: "description", searchValue: "", statusFilter: "" })
+  }
+
+  const handleDeleteClick = (interventionId) => {
+    setConfirmDelete(interventionId)
+  }
+
+  const confirmDeleteAction = async () => {
+    try {
+      setIsLoading(true)
+      await api.delete(`/api/interventions/${confirmDelete}`)
+      setSuccessMessage("Intervention supprimée avec succès")
+      await fetchData()
+      setConfirmDelete(null)
+      setIsLoading(false)
+    } catch (err) {
+      console.error("Erreur lors de la suppression:", err)
+      setError("Erreur lors de la suppression: " + (err.response?.data?.message || err.message))
+      setIsLoading(false)
     }
-  }, [filtreStatut, searchTerm]);
+  }
 
-  // Charger les données au montage du composant ou lors d'un refresh
-  useEffect(() => {
-    fetchData();
-    fetchUtilisateurs();
-    fetchEquipements();
-  }, [refresh]);
+  const exportInterventionToPDF = async (intervention) => {
+    try {
+      const doc = new jsPDF()
 
-  const deleteIntervention = async (id) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?')) {
       try {
-        await axios.delete(`http://localhost:8083/api/interventions/${id}`);
-        setRefresh(!refresh);
-      } catch (err) {
-        console.error('Erreur suppression intervention :', err);
-        setError('Erreur lors de la suppression de l\'intervention');
+        const logoUrl = "https://upload.wikimedia.org/wikipedia/commons/d/d9/Ocp-group.png"
+        doc.addImage(logoUrl, "PNG", 75, 10, 60, 20)
+      } catch (logoError) {
+        console.warn("Impossible de charger le logo:", logoError)
       }
-    }
-  };
 
-  // Fonction pour mettre à jour le chemin PDF dans la base de données
-  const updatePdfPath = async (interventionId, cheminPDF) => {
+      doc.setDrawColor(0, 153, 76)
+      doc.setLineWidth(1.2)
+      doc.line(15, 35, 195, 35)
+
+      doc.setFontSize(18)
+      doc.setTextColor(34, 47, 62)
+      doc.setFont("helvetica", "bold")
+      doc.text("Fiche détaillée d'intervention", 105, 45, { align: "center" })
+
+      doc.setFontSize(12)
+      doc.setFont("helvetica", "normal")
+      doc.setTextColor(100)
+      doc.text(`Généré le ${moment().format("DD/MM/YYYY à HH:mm")}`, 105, 53, { align: "center" })
+
+      const tableData = [
+        [" Identifiant", `#${intervention.idIntervention || "N/A"}`],
+        [" Description", intervention.description || "N/A"],
+        [" Date de demande", intervention.dateDemande ? moment(intervention.dateDemande).format("DD/MM/YYYY à HH:mm") : "N/A"],
+        [" Statut", translateStatus(intervention.statut) || "N/A"],
+        [" Technicien", intervention.technicien ? `${intervention.technicien.prenom} ${intervention.technicien.nom}` : "Non assigné"],
+        [" Demandeur", intervention.demandeur ? `${intervention.demandeur.prenom} ${intervention.demandeur.nom}` : "Non spécifié"],
+        [" Équipement", intervention.equipement ? `${intervention.equipement.typeEquipement} - ${intervention.equipement.modele || 'N/A'}` : "Aucun équipement"],
+      ]
+
+      autoTable(doc, {
+        startY: 65,
+        head: [["Champ", "Valeur"]],
+        body: tableData,
+        theme: "striped",
+        styles: { fontSize: 11, cellPadding: 4 },
+        headStyles: { fillColor: [0, 153, 76], textColor: [255, 255, 255], fontStyle: "bold" },
+        bodyStyles: { textColor: [44, 62, 80] },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+        columnStyles: { 0: { fontStyle: "bold", textColor: [34, 47, 62] } },
+        margin: { left: 20, right: 20 },
+      })
+
+      const pageCount = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i)
+        doc.setFontSize(9)
+        doc.setTextColor(120)
+        doc.text("© OCP Group – Rapport confidentiel", 20, doc.internal.pageSize.height - 12)
+        doc.text(`Page ${i} sur ${pageCount}`, 200, doc.internal.pageSize.height - 12, { align: "right" })
+      }
+
+      const fileName = `Rapport_Intervention_OCP_${intervention.idIntervention}_${moment().format("YYYYMMDD_HHmmss")}.pdf`
+      doc.save(fileName)
+    } catch (error) {
+      console.error("Erreur lors de l'export PDF:", error)
+      setError("Erreur lors de l'export PDF")
+    }
+  }
+
+  const exportInterventionToExcel = (intervention) => {
     try {
-      const formData = new FormData();
-      formData.append('cheminPDF', cheminPDF);
-      
-      await axios.put(`http://localhost:8083/api/interventions/${interventionId}/pdf-path`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      
-      console.log('Chemin PDF mis à jour dans la base de données');
-      // Rafraîchir les données pour récupérer la version mise à jour
-      setRefresh(!refresh);
-    } catch (err) {
-      console.error('Erreur lors de la mise à jour du chemin PDF :', err);
-      setError('Erreur lors de la sauvegarde du chemin PDF');
-    }
-  };
+      const interventionData = {
+        "ID Intervention": intervention.idIntervention || "N/A",
+        "Description": intervention.description || "N/A",
+        "Date de demande": intervention.dateDemande ? moment(intervention.dateDemande).format("DD/MM/YYYY HH:mm") : "N/A",
+        "Statut": translateStatus(intervention.statut) || "N/A",
+        "Technicien": intervention.technicien ? `${intervention.technicien.prenom} ${intervention.technicien.nom}` : "Non assigné",
+        "Demandeur": intervention.demandeur ? `${intervention.demandeur.prenom} ${intervention.demandeur.nom}` : "Non spécifié",
+        "Équipement": intervention.equipement ? `${intervention.equipement.typeEquipement} - ${intervention.equipement.modele || 'N/A'}` : "Aucun équipement",
+        "Date d'export": moment().format("DD/MM/YYYY HH:mm"),
+        "Exporté par": "Système OCP",
+      }
 
-  // Fonction pour mettre à jour le chemin Excel dans la base de données
-  const updateExcelPath = async (interventionId, cheminExcel) => {
+      const worksheet = XLSX.utils.json_to_sheet([interventionData])
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Intervention OCP")
+
+      const fileName = `OCP_Intervention_${intervention.idIntervention}_${moment().format("YYYYMMDD_HHmmss")}.xlsx`
+      XLSX.writeFile(workbook, fileName)
+    } catch (error) {
+      console.error("Erreur lors de l'export Excel:", error)
+      setError("Erreur lors de l'export Excel")
+    }
+  }
+
+  const exportAllInterventionsToPDF = async () => {
     try {
-      const formData = new FormData();
-      formData.append('cheminExcel', cheminExcel);
-      
-      await axios.put(`http://localhost:8083/api/interventions/${interventionId}/excel-path`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      
-      console.log('Chemin Excel mis à jour dans la base de données');
-      // Rafraîchir les données pour récupérer la version mise à jour
-      setRefresh(!refresh);
-    } catch (err) {
-      console.error('Erreur lors de la mise à jour du chemin Excel :', err);
-      setError('Erreur lors de la sauvegarde du chemin Excel');
-    }
-  };
+      const doc = new jsPDF()
 
-  // Fonction pour formater la date dans un format plus lisible
+      try {
+        const logoUrl = "https://upload.wikimedia.org/wikipedia/commons/d/d9/Ocp-group.png"
+        doc.addImage(logoUrl, "PNG", 75, 10, 60, 20)
+      } catch (logoError) {
+        console.warn("Impossible de charger le logo:", logoError)
+      }
+
+      doc.setDrawColor(0, 153, 76)
+      doc.setLineWidth(1.2)
+      doc.line(15, 35, 195, 35)
+
+      doc.setFontSize(18)
+      doc.setTextColor(34, 47, 62)
+      doc.setFont("helvetica", "bold")
+      doc.text("Liste des interventions OCP", 105, 45, { align: "center" })
+
+      doc.setFontSize(11)
+      doc.setFont("helvetica", "normal")
+      doc.setTextColor(100)
+      doc.text(`Généré le ${moment().format("DD/MM/YYYY à HH:mm")}`, 105, 53, { align: "center" })
+
+      doc.setFontSize(12)
+      doc.setTextColor(44, 62, 80)
+      doc.setFont("helvetica", "bold")
+      doc.text("Rapport de gestion des interventions", 15, 65)
+
+      doc.setFont("helvetica", "normal")
+      doc.setFontSize(10)
+      doc.setTextColor(80)
+      doc.text(`Nombre total : ${filteredInterventions.length}`, 15, 72)
+
+      const tableData = filteredInterventions.map((intervention, index) => [
+        `#${intervention.idIntervention || index + 1}`,
+        intervention.description || "N/A",
+        translateStatus(intervention.statut) || "N/A",
+        intervention.technicien ? `${intervention.technicien.prenom} ${intervention.technicien.nom}` : "Non assigné",
+        intervention.dateDemande ? moment(intervention.dateDemande).format("DD/MM/YY") : "N/A",
+      ])
+
+      autoTable(doc, {
+        startY: 80,
+        head: [["ID", "Description", "Statut", "Technicien", "Date"]],
+        body: tableData,
+        theme: "striped",
+        headStyles: { fillColor: [0, 153, 76], textColor: [255, 255, 255], fontStyle: "bold", fontSize: 10 },
+        bodyStyles: { fontSize: 9, textColor: [44, 62, 80] },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+        columnStyles: { 0: { fontStyle: "bold", halign: "center" } },
+        margin: { left: 15, right: 15 },
+      })
+
+      const pageCount = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i)
+        doc.setDrawColor(0, 153, 76)
+        doc.setLineWidth(0.5)
+        doc.line(15, doc.internal.pageSize.height - 25, 195, doc.internal.pageSize.height - 25)
+
+        doc.setFontSize(9)
+        doc.setTextColor(127, 140, 141)
+        doc.text("© OCP Group – Document confidentiel", 20, doc.internal.pageSize.height - 15)
+        doc.text(`Page ${i} sur ${pageCount}`, 195, doc.internal.pageSize.height - 10, { align: "right" })
+      }
+
+      const fileName = `OCP_Interventions_List_${moment().format("YYYYMMDD_HHmmss")}.pdf`
+      doc.save(fileName)
+    } catch (error) {
+      console.error("Erreur lors de l'export PDF:", error)
+      setError("Erreur lors de l'export PDF")
+    }
+  }
+
+  const changeLanguage = (lang) => {
+    setCurrentLanguage(lang)
+  }
+
   const formatDate = (dateString) => {
-    if (!dateString) return 'Date non définie';
-    const date = new Date(dateString);
-    return date.toLocaleString('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+    if (!dateString) return 'Date non définie'
+    return moment(dateString).format("DD/MM/YYYY à HH:mm")
+  }
 
-  // Fonction pour traduire le statut
   const translateStatus = (status) => {
     switch(status) {
-      case 'EN_ATTENTE': return 'En attente';
-      case 'EN_COURS': return 'En cours';
-      case 'TERMINEE': return 'Terminée';
-      default: return status;
+      case 'EN_ATTENTE': return 'En attente'
+      case 'EN_COURS': return 'En cours'
+      case 'TERMINEE': return 'Terminée'
+      default: return status
     }
-  };
+  }
 
-  // Fonction PDF professionnelle avec logo OCP et signature automatique
-  const exportToPDF = async (interv) => {
-    try {
-      const doc = new jsPDF();
-      
-      // Configuration des couleurs OCP
-      const ocpGreen = [0, 102, 51];
-      const darkGray = [64, 64, 64];
-      const lightGray = [128, 128, 128];
-      
-      // En-tête avec bandeau vert OCP
-      doc.setFillColor(...ocpGreen);
-      doc.rect(0, 0, 210, 40, 'F'); // Rectangle vert en haut
-      
-      // Logo OCP (simulé - remplacez par votre logo en base64)
-      // Pour ajouter un vrai logo : doc.addImage(logoBase64, 'PNG', 15, 8, 30, 24);
-      doc.setFillColor(255, 255, 255);
-      doc.circle(30, 20, 12, 'F'); // Cercle blanc pour simuler le logo
-      doc.setTextColor(0, 102, 51);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.text('OCP', 26, 22);
-      
-      // Titre principal
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(20);
-      doc.text('FICHE D\'INTERVENTION', 105, 18, { align: 'center' });
-      
-      doc.setFontSize(12);
-      doc.text('Office Chérifien des Phosphates', 105, 28, { align: 'center' });
-      
-      let y = 55;
-      
-      // Section informations principales
-      doc.setTextColor(...darkGray);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.text('INFORMATIONS GÉNÉRALES', 20, y);
-      
-      // Ligne de séparation
-      doc.setDrawColor(...ocpGreen);
-      doc.setLineWidth(0.5);
-      doc.line(20, y + 3, 190, y + 3);
-      y += 15;
-      
-      // Informations en deux colonnes
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(11);
-      doc.setTextColor(0, 0, 0);
-      
-      // Colonne gauche
-      const leftColumn = 20;
-      const rightColumn = 110;
-      let leftY = y;
-      let rightY = y;
-      
-      // ID et Date
-      doc.setFont('helvetica', 'bold');
-      doc.text('N° Intervention:', leftColumn, leftY);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`${interv.idIntervention}`, leftColumn + 35, leftY);
-      leftY += 8;
-      
-      doc.setFont('helvetica', 'bold');
-      doc.text('Date de demande:', leftColumn, leftY);
-      doc.setFont('helvetica', 'normal');
-      doc.text(formatDate(interv.dateDemande), leftColumn + 35, leftY);
-      leftY += 8;
-      
-      // Statut avec couleur
-      doc.setFont('helvetica', 'bold');
-      doc.text('Statut:', leftColumn, leftY);
-      
-      // Couleur selon le statut
-      switch(interv.statut) {
-        case 'EN_ATTENTE':
-          doc.setTextColor(255, 140, 0); // Orange
-          break;
-        case 'EN_COURS':
-          doc.setTextColor(0, 123, 255); // Bleu
-          break;
-        case 'TERMINEE':
-          doc.setTextColor(40, 167, 69); // Vert
-          break;
-        default:
-          doc.setTextColor(0, 0, 0);
-      }
-      doc.setFont('helvetica', 'bold');
-      doc.text(translateStatus(interv.statut), leftColumn + 35, leftY);
-      doc.setTextColor(0, 0, 0);
-      leftY += 12;
-      
-      // Colonne droite - Personnes
-      const technicien = interv.technicien ? `${interv.technicien.prenom} ${interv.technicien.nom}` : 'Non assigné';
-      const demandeur = interv.demandeur ? `${interv.demandeur.prenom} ${interv.demandeur.nom}` : 'Inconnu';
-      
-      doc.setFont('helvetica', 'bold');
-      doc.text('Technicien assigné:', rightColumn, rightY);
-      doc.setFont('helvetica', 'normal');
-      doc.text(technicien, rightColumn + 40, rightY);
-      rightY += 8;
-      
-      doc.setFont('helvetica', 'bold');
-      doc.text('Demandeur:', rightColumn, rightY);
-      doc.setFont('helvetica', 'normal');
-      doc.text(demandeur, rightColumn + 40, rightY);
-      rightY += 12;
-      
-      y = Math.max(leftY, rightY) + 10;
-      
-      // Section équipement
-      doc.setTextColor(...darkGray);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.text('ÉQUIPEMENT CONCERNÉ', 20, y);
-      
-      doc.setDrawColor(...ocpGreen);
-      doc.line(20, y + 3, 190, y + 3);
-      y += 15;
-      
-      const equipement = interv.equipement ? interv.equipement.typeEquipement : 'Non défini';
-      const modele = interv.equipement?.modele || 'N/A';
-      
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(11);
-      doc.setTextColor(0, 0, 0);
-      
-      doc.setFont('helvetica', 'bold');
-      doc.text('Type d\'équipement:', 20, y);
-      doc.setFont('helvetica', 'normal');
-      doc.text(equipement, 70, y);
-      y += 8;
-      
-      doc.setFont('helvetica', 'bold');
-      doc.text('Modèle:', 20, y);
-      doc.setFont('helvetica', 'normal');
-      doc.text(modele, 70, y);
-      y += 15;
-      
-      // Section description
-      doc.setTextColor(...darkGray);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.text('DESCRIPTION DE L\'INTERVENTION', 20, y);
-      
-      doc.setDrawColor(...ocpGreen);
-      doc.line(20, y + 3, 190, y + 3);
-      y += 15;
-      
-      // Cadre pour la description
-      doc.setDrawColor(...lightGray);
-      doc.setLineWidth(0.3);
-      doc.rect(20, y - 5, 170, 40);
-      
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0);
-      
-      const descriptionText = interv.description || 'Aucune description fournie.';
-      const descriptionLines = doc.splitTextToSize(descriptionText, 160);
-      doc.text(descriptionLines, 25, y + 3);
-      
-      y += 55;
-      
-      // Section observations (vide pour remplissage manuel)
-      doc.setTextColor(...darkGray);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.text('OBSERVATIONS ET ACTIONS RÉALISÉES', 20, y);
-      
-      doc.setDrawColor(...ocpGreen);
-      doc.line(20, y + 3, 190, y + 3);
-      y += 15;
-      
-      // Cadre vide pour observations
-      doc.setDrawColor(...lightGray);
-      doc.rect(20, y - 5, 170, 30);
-      y += 40;
-      
-      // Pied de page avec signatures
-      const pageHeight = doc.internal.pageSize.height;
-      let footerY = pageHeight - 60;
-      
-      // Ligne de séparation du pied de page
-      doc.setDrawColor(...ocpGreen);
-      doc.setLineWidth(0.8);
-      doc.line(20, footerY - 10, 190, footerY - 10);
-      
-      // Signatures
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.setTextColor(...darkGray);
-      
-      // Signature technicien (gauche)
-      doc.text('Signature du technicien', 30, footerY);
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
-      doc.text('Nom: ' + technicien, 30, footerY + 8);
-      doc.text('Date: _______________', 30, footerY + 16);
-      doc.text('Signature: _______________', 30, footerY + 24);
-      
-      // Signature administrateur (droite) - Automatique
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text('Validé par l\'administration', 130, footerY);
-      
-      // Récupération du nom de l'admin (remplacez par votre logique d'authentification)
-      const adminName = 'Admin OCP'; // À récupérer depuis le contexte utilisateur
-      const currentDate = new Date().toLocaleDateString('fr-FR');
-      
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
-      doc.text('Nom: ' + adminName, 130, footerY + 8);
-      doc.text('Date: ' + currentDate, 130, footerY + 16);
-      
-      // Signature stylisée automatique
-      doc.setFont('helvetica', 'italic');
-      doc.setFontSize(14);
-      doc.setTextColor(...ocpGreen);
-      doc.text(adminName, 130, footerY + 28);
-      
-      // Numéro de page et informations de génération
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(...lightGray);
-      doc.text(`Document généré le ${new Date().toLocaleString('fr-FR')} - Page 1/1`, 20, pageHeight - 10);
-      doc.text('Office Chérifien des Phosphates - Système de Gestion des Interventions', 105, pageHeight - 10, { align: 'center' });
-      
-      // Générer le nom du fichier et le chemin
-      const fileName = `OCP_intervention_${interv.idIntervention}_${new Date().toISOString().split('T')[0]}.pdf`;
-      const cheminPDF = `/documents/pdf/${fileName}`;
-      
-      // Sauvegarder le fichier
-      doc.save(fileName);
-      
-      // Mettre à jour le chemin dans la base de données
-      await updatePdfPath(interv.idIntervention, cheminPDF);
-      
-      console.log(`PDF professionnel généré et chemin sauvegardé : ${cheminPDF}`);
-    } catch (err) {
-      console.error('Erreur lors de la génération du PDF :', err);
-      setError('Erreur lors de la génération du PDF');
-    }
-  };
-
-  const exportToExcel = async (interv) => {
-    try {
-      const data = [{
-        ID: interv.idIntervention,
-        Description: interv.description,
-        DateDemande: formatDate(interv.dateDemande),
-        Statut: interv.statut,
-        Technicien: interv.technicien ? `${interv.technicien.prenom} ${interv.technicien.nom}` : 'Non assigné',
-        Demandeur: interv.demandeur ? `${interv.demandeur.prenom} ${interv.demandeur.nom}` : 'Inconnu',
-        Equipement: interv.equipement ? interv.equipement.typeEquipement : 'Non défini',
-      }];
-
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Intervention');
-      
-      // Générer le nom du fichier et le chemin
-      const fileName = `OCP_intervention_${interv.idIntervention}.xlsx`;
-      const cheminExcel = `/documents/excel/${fileName}`;
-      
-      // Sauvegarder le fichier
-      XLSX.writeFile(wb, fileName);
-      
-      // Mettre à jour le chemin dans la base de données
-      await updateExcelPath(interv.idIntervention, cheminExcel);
-      
-      console.log(`Excel généré et chemin sauvegardé : ${cheminExcel}`);
-    } catch (err) {
-      console.error('Erreur lors de la génération du fichier Excel :', err);
-      setError('Erreur lors de la génération du fichier Excel');
-    }
-  };
-
-  // Fonction pour obtenir la classe CSS selon le statut
   const getStatusClass = (status) => {
     switch(status) {
-      case 'EN_ATTENTE': return 'status-waiting';
-      case 'EN_COURS': return 'status-in-progress';
-      case 'TERMINEE': return 'status-completed';
-      default: return '';
+      case 'EN_ATTENTE': return 'ocp-admin-status-waiting'
+      case 'EN_COURS': return 'ocp-admin-status-progress'
+      case 'TERMINEE': return 'ocp-admin-status-completed'
+      default: return ''
     }
-  };
+  }
 
   return (
-    <div className="intervention-list-container">
-      <div className="intervention-header">
-        <div className="header-left">
-          <img
-            src="/images/background.png"
-            alt="Illustration intervention"
-            className="intervention-image"
-          />
-          <div>
-            <h2>Gestion des Interventions</h2>
-            <p className="subtitle">Office Chérifien des Phosphates</p>
+    <div className="ocp-admin-app-container">
+      {/* Header avec navbar OCP */}
+      <header className={`ocp-admin-header ${scrolled ? "ocp-admin-header-scrolled" : ""}`}>
+        <div className="ocp-admin-navbar">
+          <div className="ocp-admin-logo">
+            <img src="https://ammoniaenergy.org/wp-content/uploads/2019/09/OCP_Group.svg.png" alt="Logo OCP" />
+          </div>
+          
+          
+          <div className="ocp-admin-search-icon">
+            <i className="fa fa-search"></i>
           </div>
         </div>
-      </div>
+      </header>
 
-      {error && <div className="error-message">{error}</div>}
-
-      <div className="filters-container">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Rechercher par ID, description, technicien..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          <span className="search-icon">🔍</span>
+      {/* Hero Section inspirée des dunes OCP */}
+      <section className="ocp-admin-hero-section-intervention">
+        <div className="ocp-admin-hero-content">
+          <h1>Gestion des Interventions</h1>
+          <p>Suivi et maintenance technique</p>
+          <p className="ocp-admin-hero-description">
+            Interface de gestion des interventions techniques avec suivi des statuts, assignation des techniciens et 
+            fonctionnalités d'export pour une maintenance efficace des équipements OCP.
+          </p>
         </div>
+      </section>
 
-        <div className="filter-status">
-          <select 
-            value={filtreStatut} 
-            onChange={e => setFiltreStatut(e.target.value)}
-            className="status-select"
-          >
-            <option value="">Tous les statuts</option>
-            <option value="EN_ATTENTE">En attente</option>
-            <option value="EN_COURS">En cours</option>
-            <option value="TERMINEE">Terminée</option>
-          </select>
+      {/* Breadcrumb */}
+      <div className="ocp-admin-breadcrumb">
+        <div className="ocp-admin-breadcrumb-content">
+          <a href="#">Administration</a>
+          <span>&gt;</span>
+          <span className="ocp-admin-current">Gestion des interventions</span>
         </div>
       </div>
 
-      <div className="create-intervention-section">
-        <Link to="/create-intervention" className="btn-create-intervention">
-          <span className="plus-icon">+</span>
-          Nouvelle intervention
-        </Link>
-      </div>
-
-      {loading ? (
-        <div className="loading-spinner">Chargement des données...</div>
-      ) : interventions.length === 0 ? (
-        <div className="no-data-message">
-          Aucune intervention trouvée pour les critères sélectionnés.
-        </div>
-      ) : (
-        <div className="intervention-cards-container">
-          {interventions.map(interv => (
-            <div className="intervention-card" key={interv.idIntervention}>
-              <div className="card-header">
-                <div className="intervention-id">N° {interv.idIntervention}</div>
-                <div className={`intervention-status ${getStatusClass(interv.statut)}`}>
-                  {translateStatus(interv.statut)}
-                </div>
-              </div>
-              
-              <div className="card-content">
-                <div className="intervention-date">
-                  <span className="icon">📅</span> {formatDate(interv.dateDemande)}
-                </div>
-                
-                <h3 className="intervention-title">{interv.description}</h3>
-                
-                <div className="intervention-details">
-                  <div className="detail-item">
-                    <span className="icon">👨‍🔧</span>
-                    <span className="label">Technicien : </span>
-                    <span className="value">{
-                      interv.technicien 
-                        ? `${interv.technicien.prenom} ${interv.technicien.nom}` 
-                        : 'Non assigné'
-                    }</span>
-                  </div>
-                  
-                  <div className="detail-item">
-                    <span className="icon">🔧</span>
-                    <span className="label">Équipement : </span>
-                    <span className="value">{
-                      interv.equipement 
-                        ? `${interv.equipement.typeEquipement} - ${interv.equipement.modele || 'N/A'}` 
-                        : 'Aucun équipement'
-                    }</span>
-                  </div>
-                  
-                  <div className="detail-item">
-                    <span className="icon">👤</span>
-                    <span className="label">Demandeur : </span>
-                    <span className="value">{
-                      interv.demandeur 
-                        ? `${interv.demandeur.prenom} ${interv.demandeur.nom}` 
-                        : 'Non spécifié'
-                    }</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="card-actions">
-                <Link to={`/admin/interventions/edit/${interv.idIntervention}`} className="btn-edit">
-                  <span className="icon">✏️</span> Modifier
-                </Link>
-                
-                <div className="export-actions">
-                  <button onClick={() => exportToPDF(interv)} className="btn-export pdf">
-                    <span className="icon">📄</span> PDF
-                  </button>
-                  <button onClick={() => exportToExcel(interv)} className="btn-export excel">
-                    <span className="icon">📊</span> Excel
-                  </button>
-                </div>
-                
-                <button onClick={() => deleteIntervention(interv.idIntervention)} className="btn-delete">
-                  <span className="icon">🗑️</span> Supprimer
-                </button>
-              </div>
-            </div>
-          ))}
+      {/* Messages de notification */}
+      {successMessage && (
+        <div className="ocp-admin-success-message ocp-admin-animate-slide-in">
+          <i className="fas fa-check-circle"></i>
+          <span>{successMessage}</span>
         </div>
       )}
-    </div>
-  );
-};
 
-export default InterventionList;
+      {error && (
+        <div className="ocp-admin-error-message ocp-admin-animate-slide-in">
+          <i className="fas fa-exclamation-circle"></i>
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Contenu principal */}
+      <div className="ocp-admin-main-content">
+        <div className="ocp-admin-container">
+          <div className="ocp-admin-title-section">
+            <h2 className="ocp-admin-title">Liste des Interventions</h2>
+            <div className="ocp-admin-title-actions">
+              <button
+                className="ocp-admin-btn ocp-admin-btn-secondary"
+                onClick={exportAllInterventionsToPDF}
+                disabled={isLoading || filteredInterventions.length === 0}
+              >
+                <i className="fas fa-file-pdf"></i>
+                Exporter la liste
+              </button>
+              <Link
+                to="/create-intervention"
+                className="ocp-admin-btn ocp-admin-btn-primary"
+              >
+                <i className="fas fa-plus"></i>
+                Nouvelle intervention
+              </Link>
+            </div>
+          </div>
+
+          {/* Barre de filtrage */}
+          <div className="ocp-admin-search-section">
+            <form onSubmit={handleSearchSubmit}>
+              <div className="ocp-admin-search-filters">
+                <div className="ocp-admin-filter-group">
+                  <label>Champ de recherche</label>
+                  <select name="searchField" value={searchParams.searchField} onChange={handleSearchChange}>
+                    <option value="description">Description</option>
+                    <option value="technicien">Technicien</option>
+                    <option value="equipement">Équipement</option>
+                  </select>
+                </div>
+
+                <div className="ocp-admin-filter-group">
+                  <label>
+                    {searchParams.searchField === "description" ? "Rechercher par description" : 
+                     searchParams.searchField === "technicien" ? "Rechercher par technicien" : 
+                     "Rechercher par équipement"}
+                  </label>
+                  <input
+                    type="text"
+                    name="searchValue"
+                    value={searchParams.searchValue}
+                    onChange={handleSearchChange}
+                    placeholder={
+                      searchParams.searchField === "description" ? "Tapez la description..." :
+                      searchParams.searchField === "technicien" ? "Tapez le nom du technicien..." :
+                      "Tapez le type d'équipement..."
+                    }
+                  />
+                </div>
+
+                <div className="ocp-admin-filter-group">
+                  <label>Filtrer par statut</label>
+                  <select name="statusFilter" value={searchParams.statusFilter} onChange={handleSearchChange}>
+                    <option value="">Tous les statuts</option>
+                    <option value="EN_ATTENTE">En attente</option>
+                    <option value="EN_COURS">En cours</option>
+                    <option value="TERMINEE">Terminée</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="ocp-admin-search-buttons">
+                <button
+                  type="button"
+                  className="ocp-admin-btn ocp-admin-btn-secondary"
+                  onClick={resetFilters}
+                  disabled={isLoading}
+                >
+                  <i className="fas fa-sync-alt"></i>
+                  Réinitialiser
+                </button>
+                <button type="submit" className="ocp-admin-btn ocp-admin-btn-primary" disabled={isLoading}>
+                  <i className="fas fa-search"></i>
+                  Rechercher
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Statistiques de filtrage */}
+          <div className="ocp-admin-filter-stats">
+            <p>
+              <strong>{filteredInterventions.length}</strong> intervention{filteredInterventions.length > 1 ? "s" : ""} affichée
+              {filteredInterventions.length > 1 ? "s" : ""} sur <strong>{allInterventions.length}</strong> au total
+              {(searchParams.searchValue || searchParams.statusFilter) && (
+                <span className="ocp-admin-filter-info">
+                  (Filtré par {searchParams.searchField}: "{searchParams.searchValue}"
+                  {searchParams.statusFilter && ` - Statut: ${translateStatus(searchParams.statusFilter)}`})
+                </span>
+              )}
+            </p>
+          </div>
+
+          {/* Message de chargement */}
+          {isLoading && (
+            <div className="ocp-admin-loading-message">
+              <div className="ocp-admin-loading-spinner"></div>
+              <p>Chargement des données...</p>
+            </div>
+          )}
+
+          {/* Message aucun résultat */}
+          {!isLoading && filteredInterventions.length === 0 && allInterventions.length > 0 && (
+            <div className="ocp-admin-no-results-message">
+              <p>Aucune intervention trouvée pour les critères de recherche spécifiés.</p>
+            </div>
+          )}
+
+          {/* Dialogue de confirmation de suppression */}
+          {confirmDelete && (
+            <div className="ocp-admin-modal-overlay">
+              <div className="ocp-admin-modal ocp-admin-modal-confirm">
+                <div className="ocp-admin-edit-form-header">
+                  <h3>Confirmer la suppression</h3>
+                  <button className="ocp-admin-btn-close" onClick={() => setConfirmDelete(null)}>
+                    ×
+                  </button>
+                </div>
+
+                <div className="ocp-admin-modal-body">
+                  <div className="ocp-admin-alert-icon">
+                    <i className="fas fa-exclamation-triangle"></i>
+                  </div>
+                  <p>Êtes-vous sûr de vouloir supprimer cette intervention ? Cette action est irréversible.</p>
+                </div>
+
+                <div className="ocp-admin-form-buttons">
+                  <button className="ocp-admin-btn-cancel" onClick={() => setConfirmDelete(null)} disabled={isLoading}>
+                    Annuler
+                  </button>
+                  <button
+                    className="ocp-admin-btn ocp-admin-btn-delete"
+                    onClick={confirmDeleteAction}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Suppression..." : "Supprimer"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tableau des interventions style OCP */}
+          {!isLoading && filteredInterventions.length > 0 && (
+            <div className="ocp-admin-table-container ocp-admin-animate-slide-in">
+              <table className="ocp-admin-styled-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Description</th>
+                    <th>Statut</th>
+                    <th>Technicien</th>
+                    <th>Équipement</th>
+                    <th>Date demande</th>
+                    <th>Actions</th>
+                    <th>Export</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredInterventions.map((intervention) => (
+                    <tr key={intervention.idIntervention}>
+                      <td className="ocp-admin-number-cell">#{intervention.idIntervention}</td>
+                      <td>
+                        <div className="ocp-admin-intervention-info">
+                          <strong>{intervention.description || "Sans description"}</strong>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`ocp-admin-connection-status ${getStatusClass(intervention.statut)}`}>
+                          {translateStatus(intervention.statut)}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="ocp-admin-user-info">
+                          <div className="ocp-admin-avatar">
+                            {intervention.technicien?.nom?.charAt(0) || "?"}
+                            {intervention.technicien?.prenom?.charAt(0) || ""}
+                          </div>
+                          <span>
+                            {intervention.technicien 
+                              ? `${intervention.technicien.prenom} ${intervention.technicien.nom}` 
+                              : 'Non assigné'}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        {intervention.equipement 
+                          ? `${intervention.equipement.typeEquipement} - ${intervention.equipement.modele || 'N/A'}` 
+                          : 'Aucun équipement'}
+                      </td>
+                      <td>
+                        <div className="ocp-admin-connection-date">
+                          {formatDate(intervention.dateDemande)}
+                        </div>
+                      </td>
+                      <td>
+                        <Link
+                          to={`/admin/interventions/edit/${intervention.idIntervention}`}
+                          className="ocp-admin-btn ocp-admin-btn-edit"
+                          disabled={isLoading}
+                        >
+                          <i className="fas fa-edit"></i>
+                          Modifier
+                        </Link>
+                        <button
+                          className="ocp-admin-btn ocp-admin-btn-delete"
+                          onClick={() => handleDeleteClick(intervention.idIntervention)}
+                          disabled={isLoading}
+                        >
+                          <i className="fas fa-trash-alt"></i>
+                          Supprimer
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          className="ocp-admin-btn ocp-admin-btn-export"
+                          onClick={() => exportInterventionToPDF(intervention)}
+                          disabled={isLoading}
+                        >
+                          <i className="fas fa-file-pdf"></i>
+                          PDF
+                        </button>
+                        <button
+                          className="ocp-admin-btn ocp-admin-btn-export"
+                          onClick={() => exportInterventionToExcel(intervention)}
+                          disabled={isLoading}
+                        >
+                          <i className="fas fa-file-excel"></i>
+                          Excel
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* État vide */}
+          {!isLoading && filteredInterventions.length === 0 && allInterventions.length === 0 && (
+            <div className="ocp-admin-empty-state">
+              <i className="fas fa-tools"></i>
+              <p>Aucune intervention trouvée.</p>
+              <Link
+                to="/create-intervention"
+                className="ocp-admin-btn ocp-admin-btn-primary"
+              >
+                Créer la première intervention
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Footer style OCP */}
+      <footer className="ocp-admin-footer">
+        <div className="ocp-admin-footer-content">
+          <div className="ocp-admin-footer-logo">
+            <img src="https://ammoniaenergy.org/wp-content/uploads/2019/09/OCP_Group.svg.png" alt="Logo OCP" />
+          </div>
+          <div className="ocp-admin-footer-links">
+            <div className="ocp-admin-footer-column">
+              <h4>OCP en action</h4>
+              <a href="#">À propos</a>
+              <a href="#">Stratégie</a>
+              <a href="#">Produits et solutions</a>
+              <a href="#">Investisseurs</a>
+              <a href="#">Médias</a>
+              <a href="#">Carrières</a>
+              <a href="#">Contact</a>
+            </div>
+            <div className="ocp-admin-footer-column">
+              <h4>Pages populaires</h4>
+              <a href="#">Innovation</a>
+              <a href="#">Qu'est-ce que le phosphate ?</a>
+              <a href="#">Processus de customisation</a>
+              <a href="#">Histoire</a>
+              <a href="#">Mission et vision</a>
+            </div>
+            <div className="ocp-admin-footer-column">
+              <h4>Stories</h4>
+              <a href="#">Codification, créativité et liberté</a>
+              <a href="#">Un sport, des milliers de vies changées transformées</a>
+              <a href="#">Une nouvelle culture, un nouvel avenir</a>
+            </div>
+          </div>
+        </div>
+        <div className="ocp-admin-footer-bottom">
+          <div className="ocp-admin-social-icons">
+            <a href="#">
+              <i className="fab fa-facebook-f"></i>
+            </a>
+            <a href="#">
+              <i className="fab fa-twitter"></i>
+            </a>
+            <a href="#">
+              <i className="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#">
+              <i className="fab fa-instagram"></i>
+            </a>
+            <a href="#">
+              <i className="fab fa-youtube"></i>
+            </a>
+          </div>
+          <div className="ocp-admin-copyright">
+            <p>© OCP Group 2023</p>
+            <a href="#">Fournisseurs</a>
+            <a href="#">Mentions légales</a>
+            <a href="#">Conditions d'utilisation</a>
+            <a href="#">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+export default InterventionList

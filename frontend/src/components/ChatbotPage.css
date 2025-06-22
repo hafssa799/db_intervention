@@ -1,831 +1,1310 @@
-/* General Body and HTML Styles */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333; /* Dark grey for text */
-    background-color: #f4f7f6; /* Very light grey/green background */
-    line-height: 1.6;
+/* Importation des polices Google */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
+
+/* Variables CSS pour ChatbotPage OCP */
+:root {
+  --ocp-admin-green: #099649;
+  --ocp-admin-green-light: #0ba852;
+  --ocp-admin-green-dark: #027a38;
+  --ocp-admin-sand: #d4a574;
+  --ocp-admin-sand-light: #e8c4a0;
+  --ocp-admin-turquoise: #4a9b8e;
+  --ocp-admin-grey: #2c3e50;
+  --ocp-admin-light-grey: #7f8c8d;
+  --ocp-admin-bg: #fefefe;
+  --ocp-admin-white: #ffffff;
+  --ocp-admin-border: rgba(3, 154, 71, 0.08);
+  --ocp-admin-shadow: rgba(3, 154, 71, 0.06);
+  --ocp-admin-text: #050505;
+  --ocp-admin-danger: #e74c3c;
+  --ocp-admin-warning: #f39c12;
+  --ocp-admin-success: #27ae60;
+  --ocp-admin-info: #3498db;
+}
+
+/* Reset et styles généraux UNIQUEMENT pour ChatbotPage */
+.ocp-admin-app-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.ocp-admin-app-container {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: white;
+  line-height: 1.6;
+  background-color: var(--ocp-admin-bg);
+  min-height: 100vh;
+  font-weight: 400;
+}
+
+.ocp-admin-app-container a {
+  text-decoration: none;
+  color: inherit;
 }
 
-/* Chatbot Container */
-.chatbot-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Full viewport height */
-    max-width: 1200px; /* Max width for larger screens */
-    margin: 0 auto; /* Center the container */
-    background-color: #ffffff; /* White background for the chatbot itself */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth */
-    border-radius: 12px;
-    overflow: hidden; /* Ensures rounded corners are respected */
+/* Header ChatbotPage */
+.ocp-admin-header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: all 0.4s ease;
+  padding: 15px 0;
+}
+
+.ocp-admin-header-scrolled {
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  color: var(--ocp-admin-text);
+}
+
+.ocp-admin-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.ocp-admin-logo img {
+  height: 45px;
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-nav-links {
+  display: flex;
+  gap: 40px;
+}
+
+.ocp-admin-nav-link {
+  color: var(--ocp-admin-text);
+  font-weight: 400;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 8px 0;
+}
+
+.ocp-admin-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--ocp-admin-green);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* RTL Support for Arabic */
-.chatbot-container.rtl {
-    direction: rtl;
-    text-align: right;
+.ocp-admin-nav-link:hover::after {
+  width: 100%;
 }
 
-/* Theme Specific Styles */
-.chatbot-container.theme-dark {
-    background-color: #2c3e50; /* Dark blue-grey */
-    color: #ecf0f1; /* Light grey for text */
+.ocp-admin-nav-link:hover {
+  color: var(--ocp-admin-green);
 }
 
-.chatbot-container.theme-dark .chatbot-header {
-    background-color: #34495e; /* Slightly darker header for contrast */
-    color: #ecf0f1;
-    border-bottom-color: #4a6572;
+.ocp-admin-language-switcher {
+  display: flex;
+  gap: 15px;
+  color: var(--ocp-admin-text);
+  font-weight: 500;
+  font-size: 14px;
 }
 
-.chatbot-container.theme-dark .chatbot-input input {
-    background-color: #4a6572;
-    color: #ecf0f1;
-    border-color: #3f5567;
+.ocp-admin-language-switcher span {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
-.chatbot-container.theme-dark .chatbot-input button {
-    background-color: #1abc9c; /* Green accent */
-    color: white;
+.ocp-admin-language-switcher span.active,
+.ocp-admin-language-switcher span:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green);
+  background: rgba(3, 154, 71, 0.05);
+}
+
+.ocp-admin-search-icon {
+  color: var(--ocp-admin-text);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.chatbot-container.theme-dark .message.user-message {
-    background-color: #2980b9; /* Blue for user messages */
-    color: white;
+.ocp-admin-search-icon:hover {
+  color: var(--ocp-admin-green);
 }
 
-.chatbot-container.theme-dark .message.bot-message {
-    background-color: #3f5567; /* Darker grey for bot messages */
-    color: #ecf0f1;
+/* Hero Section ChatbotPage */
+.ocp-admin-hero-section-chatbot {
+  height: 60vh;
+  min-height: 350px;
+  background-image: url("https://i.pinimg.com/736x/ac/28/99/ac289925ac56d014a2d737900e25fb18.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin-top: 0;
+  padding-top: 70px;
+  position: relative;
 }
 
-.chatbot-container.theme-dark .historique {
-    background-color: #34495e;
-    border-right-color: #4a6572;
-    color: #ecf0f1;
+.ocp-admin-hero-section-chatbot::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
 }
 
-.chatbot-container.theme-dark .historique h3 {
-    color: #ecf0f1;
+.ocp-admin-hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 10;
 }
 
-.chatbot-container.theme-dark .historique-item {
-    background-color: #4a6572;
-    color: #ecf0f1;
+.ocp-admin-hero-content h1 {
+  font-size: 42px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+  animation: ocp-admin-fadeInUp 1s ease-out;
+}
+
+.ocp-admin-hero-content p {
+  font-size: 18px;
+  margin-bottom: 15px;
+  font-weight: 400;
+  opacity: 0.95;
+  animation: ocp-admin-fadeInUp 1s ease-out 0.2s both;
+}
+
+.ocp-admin-hero-description {
+  max-width: 650px;
+  font-weight: 300;
+  line-height: 1.8;
+  font-size: 15px;
+  opacity: 0.9;
+  animation: ocp-admin-fadeInUp 1s ease-out 0.4s both;
+}
+
+@keyframes ocp-admin-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Breadcrumb ChatbotPage */
+.ocp-admin-breadcrumb {
+  background: var(--ocp-admin-white);
+  padding: 20px 0;
+  border-bottom: 1px solid var(--ocp-admin-border);
+}
+
+.ocp-admin-breadcrumb-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ocp-admin-light-grey);
+}
+
+.ocp-admin-breadcrumb a {
+  color: var(--ocp-admin-light-grey);
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.ocp-admin-breadcrumb a:hover {
+  color: var(--ocp-admin-green);
+}
+
+.ocp-admin-current {
+  color: var(--ocp-admin-green);
+  font-weight: 500;
+}
+
+/* Conteneur principal ChatbotPage */
+.ocp-admin-main-content {
+  margin-top: -50px;
+  position: relative;
+  z-index: 5;
+}
+
+.ocp-admin-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* Messages ChatbotPage */
+.ocp-admin-success-message {
+  background: rgba(39, 174, 96, 0.03);
+  color: var(--ocp-admin-success);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(39, 174, 96, 0.08);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ocp-admin-error-message {
+  background: rgba(231, 76, 60, 0.03);
+  color: var(--ocp-admin-danger);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(231, 76, 60, 0.08);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Layout Chatbot */
+.ocp-admin-chatbot-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 30px;
+  height: 70vh;
+  min-height: 600px;
 }
 
-.chatbot-container.theme-dark .historique-item:hover {
-    background-color: #5b798f;
+/* Section Chat */
+.ocp-admin-chat-section {
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  border: 1px solid var(--ocp-admin-border);
+  box-shadow: 0 4px 20px var(--ocp-admin-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: ocp-admin-fadeIn 0.8s ease-out;
+}
+
+@keyframes ocp-admin-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ocp-admin-chat-header {
+  background: linear-gradient(135deg, var(--ocp-admin-green), var(--ocp-admin-green-light));
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ocp-admin-chat-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ocp-admin-chat-title i {
+  font-size: 20px;
+}
+
+.ocp-admin-chat-title h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Section Profil dans le chat */
+.ocp-admin-profile-section {
+  position: relative;
+}
+
+.ocp-admin-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-profile-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ocp-admin-avatar,
+.ocp-admin-avatar-placeholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.ocp-admin-profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ocp-admin-profile-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ocp-admin-profile-role {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.ocp-admin-dropdown-arrow {
+  font-size: 10px;
+  transition: transform 0.3s ease;
+}
+
+.ocp-admin-profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 10px;
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  border: 1px solid var(--ocp-admin-border);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  min-width: 300px;
+  z-index: 1000;
+  animation: ocp-admin-slideInFromTop 0.3s ease-out;
+}
+
+@keyframes ocp-admin-slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.chatbot-container.theme-dark .new-conversation-button {
-    background-color: #27ae60; /* Slightly different green for new conversation */
-    color: white;
+.ocp-admin-profile-header {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--ocp-admin-border);
 }
 
-.chatbot-container.theme-dark .profile-dropdown {
-    background-color: #34495e;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    border-color: #4a6572;
+.ocp-admin-profile-avatar-section {
+  position: relative;
 }
 
-.chatbot-container.theme-dark .profile-dropdown select {
-    background-color: #4a6572;
-    color: #ecf0f1;
-    border-color: #3f5567;
+.ocp-admin-profile-avatar-large,
+.ocp-admin-avatar-placeholder-large {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
 }
+
+.ocp-admin-change-avatar-btn {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ocp-admin-green);
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ocp-admin-profile-details h3 {
+  color: var(--ocp-admin-text);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.ocp-admin-profile-email {
+  color: var(--ocp-admin-light-grey);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.ocp-admin-profile-status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.ocp-admin-profile-status.active {
+  background: rgba(39, 174, 96, 0.1);
+  color: var(--ocp-admin-success);
+}
+
+.ocp-admin-profile-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--ocp-admin-border);
+}
+
+.ocp-admin-stat-item {
+  text-align: center;
+}
+
+.ocp-admin-stat-number {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ocp-admin-green);
+}
+
+.ocp-admin-stat-label {
+  font-size: 12px;
+  color: var(--ocp-admin-light-grey);
+}
+
+.ocp-admin-profile-quick-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ocp-admin-setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ocp-admin-setting-item label {
+  font-size: 14px;
+  color: var(--ocp-admin-text);
+  font-weight: 500;
+}
+
+.ocp-admin-setting-item select {
+  padding: 6px 10px;
+  border: 1px solid var(--ocp-admin-border);
+  border-radius: 6px;
+  font-size: 12px;
+  background: var(--ocp-admin-white);
+  color: var(--ocp-admin-text);
+}
+
+/* Zone de conversation */
+.ocp-admin-conversation {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ocp-admin-message {
+  display: flex;
+  gap: 12px;
+  max-width: 80%;
+}
+
+.ocp-admin-user-message {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.ocp-admin-bot-message {
+  align-self: flex-start;
+}
+
+.ocp-admin-message-avatar {
+  flex-shrink: 0;
+}
+
+.ocp-admin-bot-avatar,
+.ocp-admin-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+.ocp-admin-bot-avatar {
+  background: var(--ocp-admin-green);
+}
+
+.ocp-admin-message-content {
+  background: rgb(135, 214, 240);
+  border: 1px solid var(--ocp-admin-border);
+  border-radius: 12px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ocp-admin-user-message .ocp-admin-message-content {
+  background: var(--ocp-admin-green);
+  color: rgb(255, 255, 255);
+  border-color: var(--ocp-admin-green);
+}
 
-/* Header */
-.chatbot-header {
-    background-color: #e0f2f1; /* Light green-blue */
-    padding: 20px 30px;
-    border-bottom: 1px solid #c8e6c9; /* Lighter green border */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 70px;
-}
-
-.chatbot-header .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.chatbot-header h1 {
-    margin: 0;
-    color: #2e7d32; /* Deep green for the title */
-    font-size: 1.8em;
-    font-weight: 600;
-}
-
-.error-message {
-    background-color: #ffebee; /* Light red */
-    color: #c62828; /* Dark red */
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin-top: 10px;
-    text-align: center;
-    font-size: 0.9em;
-    border: 1px solid #ef9a9a;
-}
-
-/* Profile Section in Header */
-.profile-section {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.profile-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-radius: 25px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.profile-button:hover {
-    background-color: rgba(46, 125, 50, 0.1); /* Light green hover */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.avatar, .avatar-placeholder {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: #81c784; /* Medium green */
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-right: 10px;
-    object-fit: cover;
-}
-
-.profile-name {
-    font-weight: 500;
-    color: #2e7d32;
-    margin-right: 8px;
-}
-
-.dropdown-arrow {
-    color: #2e7d32;
-    font-size: 0.8em;
-}
-
-.profile-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 250px;
-    z-index: 1000;
-    padding: 15px;
-    transform-origin: top right;
-    animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95) translateY(-5px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
+.ocp-admin-message-content::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
 }
 
-.profile-info {
-    display: flex;
-    align-items: center;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 15px;
+.ocp-admin-bot-message .ocp-admin-message-content::before {
+  left: -16px;
+  border-right-color: var(--ocp-admin-border);
 }
 
-.profile-avatar-large {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #81c784;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8em;
-    font-weight: bold;
-    margin-right: 15px;
-    overflow: hidden;
+.ocp-admin-user-message .ocp-admin-message-content::before {
+  right: -16px;
+  border-left-color: var(--ocp-admin-green);
 }
 
-.profile-avatar-large img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.ocp-admin-message-timestamp {
+  font-size: 11px;
+  color: var(--ocp-admin-light-grey);
+  margin-top: 8px;
+  text-align: right;
 }
 
-.profile-details h3 {
-    margin: 0;
-    font-size: 1.3em;
-    color: #333;
-}
+.ocp-admin-user-message .ocp-admin-message-timestamp {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Indicateur de frappe */
+.ocp-admin-typing-indicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.ocp-admin-typing-indicator span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ocp-admin-green);
+  animation: ocp-admin-typing 1.4s infinite ease-in-out;
+}
+
+.ocp-admin-typing-indicator span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.ocp-admin-typing-indicator span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes ocp-admin-typing {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Zone de saisie */
+.ocp-admin-chat-input {
+  padding: 20px 25px;
+  border-top: 1px solid var(--ocp-admin-border);
+  background: rgba(3, 154, 71, 0.02);
+}
+
+.ocp-admin-input-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.ocp-admin-input-container input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--ocp-admin-border);
+  border-radius: 25px;
+  font-size: 14px;
+  background: var(--ocp-admin-white);
+  color: var(--ocp-admin-text);
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-input-container input:focus {
+  border-color: var(--ocp-admin-green);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(3, 154, 71, 0.1);
+}
+
+.ocp-admin-input-container button {
+  background: var(--ocp-admin-green);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.ocp-admin-input-container button:hover:not(:disabled) {
+  background: var(--ocp-admin-green-dark);
+  transform: translateY(-1px);
+}
+
+.ocp-admin-input-container button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Section Historique */
+.ocp-admin-history-section {
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  border: 1px solid var(--ocp-admin-border);
+  box-shadow: 0 4px 20px var(--ocp-admin-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: ocp-admin-fadeIn 0.8s ease-out 0.2s both;
+}
+
+.ocp-admin-history-header {
+  background: linear-gradient(135deg, var(--ocp-admin-green), var(--ocp-admin-green-light));
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ocp-admin-history-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ocp-admin-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-family: "Inter", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+}
 
-.profile-details p {
-    margin: 4px 0 0;
-    font-size: 0.9em;
-    color: #777;
+.ocp-admin-btn-primary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.profile-options div {
-    margin-bottom: 15px;
+.ocp-admin-btn-primary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
-.profile-options label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 5px;
-    color: #555;
-}
-
-.profile-options select {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 0.95em;
-    background-color: #f9f9f9;
+.ocp-admin-btn-secondary {
+  background: var(--ocp-admin-light-grey);
+  color: white;
 }
 
-.profile-actions {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
-
-.profile-action-btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 600;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.ocp-admin-btn-secondary:hover {
+  background: #6c7b7d;
+  transform: translateY(-1px);
 }
 
-.settings-btn {
-    background-color: #f0f0f0;
-    color: #555;
-}
-
-.settings-btn:hover {
-    background-color: #e0e0e0;
-}
-
-.logout-btn {
-    background-color: #e57373; /* Light red for logout */
-    color: white;
-}
-
-.logout-btn:hover {
-    background-color: #ef5350; /* Slightly darker red */
-}
-
-
-/* Main Chatbot Content Area */
-.chatbot-content {
-    display: flex;
-    flex: 1; /* Takes remaining vertical space */
-    overflow: hidden; /* Important for scrollable areas */
-}
-
-/* Conversation Area */
-.conversation {
-    flex: 3; /* Takes more space than history */
-    padding: 20px;
-    overflow-y: auto; /* Scroll for messages */
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    background-color: #fdfdfd; /* Off-white for conversation background */
-}
-
-.message {
-    max-width: 80%; /* Limit message width */
-    padding: 12px 18px;
-    border-radius: 20px;
-    word-wrap: break-word;
-    white-space: pre-wrap; /* Preserves whitespace and line breaks */
-    font-size: 0.95em;
-}
-
-.user-message {
-    align-self: flex-end; /* Align to the right */
-    background-color: #4CAF50; /* Green for user messages */
-    color: white;
-    border-bottom-right-radius: 4px; /* Slightly different corner for user messages */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.bot-message {
-    align-self: flex-start; /* Align to the left */
-    background-color: #e8f5e9; /* Very light green for bot messages */
-    color: #333;
-    border-bottom-left-radius: 4px; /* Slightly different corner for bot messages */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* Loader for bot response */
-.loader {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #4CAF50;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-    margin: 5px;
+/* Dialog de renommage */
+.ocp-admin-rename-dialog {
+  padding: 15px 20px;
+  background: rgba(3, 154, 71, 0.05);
+  border-bottom: 1px solid var(--ocp-admin-border);
 }
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+
+.ocp-admin-rename-dialog input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--ocp-admin-border);
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
-/* History Sidebar */
-.historique {
-    flex: 1; /* Takes less space */
-    background-color: #e8f5e9; /* Light green background */
-    padding: 20px;
-    border-left: 1px solid #c8e6c9; /* Green border */
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto; /* Scroll for history items */
+.ocp-admin-rename-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
-
-.historique h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #2e7d32; /* Deep green */
-    font-size: 1.4em;
-    font-weight: 600;
-    text-align: center;
+
+/* Liste historique */
+.ocp-admin-history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
 }
 
-.new-conversation-button {
-    background-color: #66bb6a; /* Medium green */
-    color: white;
-    border: none;
-    padding: 12px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 500;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-bottom: 20px;
-    display: block;
-    width: 100%;
-    text-align: center;
-}
-
-.new-conversation-button:hover {
-    background-color: #4CAF50; /* Darker green on hover */
-    transform: translateY(-2px);
-}
-
-.historique-list {
-    flex: 1; /* Allows the list to take remaining space and scroll */
-    overflow-y: auto;
-    padding-right: 5px; /* For scrollbar spacing */
-}
-
-.historique-list p {
-    color: #777;
-    text-align: center;
-    margin-top: 20px;
-    font-style: italic;
-}
+.ocp-admin-empty-history {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ocp-admin-light-grey);
+}
 
-.historique-item {
-    background-color: #f0fdf0; /* Very light green for individual items */
-    padding: 12px 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #dcdcdc; /* Subtle border */
+.ocp-admin-empty-history i {
+  font-size: 48px;
+  margin-bottom: 15px;
+  opacity: 0.5;
 }
 
-.historique-item:hover {
-    background-color: #e0ffe0; /* Lighter green on hover */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.ocp-admin-history-item {
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.historique-content {
-    flex-grow: 1; /* Allows content to take available space */
-    margin-right: 10px;
-    overflow: hidden; /* For text truncation */
+.ocp-admin-history-item:hover {
+  background: rgba(3, 154, 71, 0.05);
+  border-color: var(--ocp-admin-border);
+  transform: translateX(5px);
 }
 
-.historique-question {
-    font-weight: 500;
-    color: #333;
-    white-space: nowrap; /* Prevent question from wrapping */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Add ellipsis if text overflows */
+.ocp-admin-history-content {
+  flex: 1;
+  min-width: 0;
 }
 
-.historique-timestamp {
-    font-size: 0.8em;
-    color: #777;
-    margin-top: 4px;
+.ocp-admin-history-question {
+  font-weight: 500;
+  color: var(--ocp-admin-text);
+  font-size: 14px;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* History Item Actions (Menu Dots) */
-.historique-actions {
-    position: relative;
+.ocp-admin-history-timestamp {
+  font-size: 12px;
+  color: var(--ocp-admin-light-grey);
 }
 
-.menu-container {
-    position: relative;
-    display: inline-block;
+.ocp-admin-history-actions {
+  flex-shrink: 0;
 }
 
-.menu-dots {
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    cursor: pointer;
-    color: #777;
-    padding: 2px 5px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+.ocp-admin-menu-container {
+  position: relative;
 }
 
-.menu-dots:hover {
-    background-color: #e0e0e0;
+.ocp-admin-menu-dots {
+  background: none;
+  border: none;
+  color: var(--ocp-admin-light-grey);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-size: 16px;
 }
 
-.menu-dropdown {
-    position: absolute;
-    top: 0;
-    right: 100%; /* Position to the left of the dots */
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    min-width: 150px;
-    z-index: 10;
-    animation: fadeIn 0.15s ease-out;
+.ocp-admin-menu-dots:hover {
+  background: rgba(3, 154, 71, 0.1);
+  color: var(--ocp-admin-green);
 }
 
-.menu-dropdown button {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 10px 15px;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    font-size: 0.9em;
-    color: #333;
-    transition: background-color 0.2s ease;
-    gap: 8px; /* Space between icon and text */
+.ocp-admin-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--ocp-admin-white);
+  border: 1px solid var(--ocp-admin-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  min-width: 150px;
+  z-index: 1000;
+  animation: ocp-admin-slideInFromTop 0.2s ease-out;
 }
 
-.menu-dropdown button:hover {
-    background-color: #f0f0f0;
+.ocp-admin-menu-dropdown button {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 15px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ocp-admin-text);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.menu-dropdown button:first-child {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+.ocp-admin-menu-dropdown button:hover {
+  background: rgba(3, 154, 71, 0.05);
+  color: var(--ocp-admin-green);
 }
 
-.menu-dropdown button:last-child {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+.ocp-admin-menu-icon {
+  font-size: 14px;
 }
 
-.menu-icon {
-    font-size: 1.1em;
+/* Popup de partage */
+.ocp-admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: ocp-admin-fadeIn 0.3s ease-out;
 }
 
-/* Rename Dialog */
-.rename-dialog {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.ocp-admin-share-popup {
+  background: var(--ocp-admin-white);
+  border-radius: 12px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: ocp-admin-slideInFromBottom 0.4s ease-out;
 }
 
-.rename-dialog input {
-    width: calc(100% - 20px);
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 0.95em;
+@keyframes ocp-admin-slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.rename-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+.ocp-admin-share-popup-header {
+  background: linear-gradient(135deg, var(--ocp-admin-green), var(--ocp-admin-green-light));
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px 12px 0 0;
 }
 
-.rename-actions button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
+.ocp-admin-share-popup-header h3 {
+  font-size: 18px;
+  font-weight: 600;
 }
 
-.rename-actions button:first-child { /* Save button */
-    background-color: #66bb6a;
-    color: white;
+.ocp-admin-btn-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
-.rename-actions button:first-child:hover {
-    background-color: #4CAF50;
+.ocp-admin-btn-close:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.rename-actions button:last-child { /* Cancel button */
-    background-color: #e0e0e0;
-    color: #555;
+.ocp-admin-share-link-container {
+  padding: 25px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
-.rename-actions button:last-child:hover {
-    background-color: #ccc;
+.ocp-admin-share-link-container input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--ocp-admin-border);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--ocp-admin-bg);
+  color: var(--ocp-admin-text);
 }
 
+.ocp-admin-share-link-success {
+  padding: 15px 25px;
+  background: rgba(39, 174, 96, 0.1);
+  color: var(--ocp-admin-success);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--ocp-admin-border);
+}
 
-/* Chat Input Area */
-.chatbot-input {
-    display: flex;
-    padding: 15px 20px;
-    border-top: 1px solid #e0e0e0; /* Light grey border */
-    background-color: #f8f8f8; /* Very light grey */
-    gap: 10px;
-    align-items: center;
+/* Footer ChatbotPage */
+.ocp-admin-footer {
+  background: var(--ocp-admin-green-dark);
+  color: white;
+  padding: 80px 0 30px;
+  margin-top: 100px;
 }
 
-.chatbot-input input {
-    flex: 1; /* Takes most of the space */
-    padding: 12px 15px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    font-size: 1em;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+.ocp-admin-footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 60px;
+  margin-bottom: 50px;
 }
 
-.chatbot-input input:focus {
-    border-color: #66bb6a; /* Green focus border */
-    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2); /* Light green shadow */
+.ocp-admin-footer-logo img {
+  height: 50px;
+  margin-bottom: 30px;
+  filter: brightness(0) invert(1);
 }
 
-.chatbot-input button {
-    background-color: #4CAF50; /* Green send button */
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+.ocp-admin-footer-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
 }
 
-.chatbot-input button:hover:not(:disabled) {
-    background-color: #388e3c; /* Darker green on hover */
-    transform: translateY(-1px);
+.ocp-admin-footer-column h4 {
+  font-size: 16px;
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: var(--ocp-admin-green-light);
 }
 
-.chatbot-input button:disabled {
-    background-color: #a5d6a7; /* Lighter green when disabled */
-    cursor: not-allowed;
-    opacity: 0.7;
+.ocp-admin-footer-column a {
+  display: block;
+  margin-bottom: 12px;
+  opacity: 0.8;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-weight: 400;
 }
 
-/* Share Popup */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 100;
+.ocp-admin-footer-column a:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green-light);
+  transform: translateX(5px);
 }
 
-.share-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    z-index: 101;
-    width: 90%;
-    max-width: 450px;
-    animation: zoomIn 0.2s ease-out;
+.ocp-admin-footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 25px 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-@keyframes zoomIn {
-    from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.ocp-admin-social-icons {
+  display: flex;
+  gap: 20px;
 }
 
-.share-popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
+.ocp-admin-social-icons a {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
-.share-popup-header h3 {
-    margin: 0;
-    font-size: 1.5em;
-    color: #333;
+.ocp-admin-social-icons a:hover {
+  background: var(--ocp-admin-green);
+  transform: translateY(-3px);
 }
 
-.share-popup-close {
-    background: none;
-    border: none;
-    font-size: 1.8em;
-    cursor: pointer;
-    color: #777;
-    padding: 0;
-    line-height: 1;
+.ocp-admin-copyright {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+  opacity: 0.8;
+  font-weight: 400;
 }
 
-.share-popup-close:hover {
-    color: #333;
+.ocp-admin-copyright a {
+  transition: all 0.3s ease;
 }
 
-.share-link-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+.ocp-admin-copyright a:hover {
+  opacity: 1;
+  color: var(--ocp-admin-green-light);
 }
 
-.share-link-container input {
-    flex: 1;
-    padding: 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #f8f8f8;
-    font-size: 0.9em;
-    color: #555;
+/* Animations ChatbotPage */
+.ocp-admin-animate-slide-in {
+  animation: ocp-admin-slideInFromBottom 0.8s ease-out;
 }
 
-.share-link-container button {
-    background-color: #66bb6a;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
+@keyframes ocp-admin-slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
+/* Responsive ChatbotPage */
+@media (max-width: 1200px) {
+  .ocp-admin-container {
+    padding: 30px;
+  }
 
-.share-link-container button:hover {
-    background-color: #4CAF50;
+  .ocp-admin-navbar {
+    padding: 0 30px;
+  }
+
+  .ocp-admin-chatbot-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .ocp-admin-history-section {
+    order: -1;
+    max-height: 300px;
+  }
+
+  .ocp-admin-chat-section {
+    min-height: 500px;
+  }
 }
+
+@media (max-width: 992px) {
+  .ocp-admin-nav-links {
+    display: none;
+  }
+
+  .ocp-admin-footer-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .ocp-admin-hero-content h1 {
+    font-size: 32px;
+  }
 
-.share-link-success {
-    display: flex;
-    align-items: center;
-    color: #2e7d32;
-    font-size: 0.9em;
-    font-weight: 500;
-    gap: 5px;
+  .ocp-admin-profile-dropdown {
+    min-width: 280px;
+  }
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
-    .chatbot-content {
-        flex-direction: column; /* Stack conversation and history on smaller screens */
-    }
+  .ocp-admin-hero-content h1 {
+    font-size: 28px;
+  }
 
-    .historique {
-        border-left: none;
-        border-top: 1px solid #e0e0e0; /* Add top border instead */
-        height: 200px; /* Fixed height for history on small screens */
-        flex: none; /* Remove flex grow */
-    }
+  .ocp-admin-hero-content p {
+    font-size: 16px;
+  }
 
-    .chatbot-header {
-        padding: 15px 20px;
-        flex-direction: column;
-        align-items: flex-start;
-    }
+  .ocp-admin-footer-bottom {
+    flex-direction: column;
+  }
 
-    .chatbot-header h1 {
-        font-size: 1.5em;
-        margin-bottom: 10px;
-    }
+  .ocp-admin-container {
+    padding: 20px;
+  }
 
-    .profile-dropdown {
-        left: 0;
-        right: auto;
-        transform-origin: top left;
-        width: 100%;
-        max-width: 250px; /* Still limit dropdown width */
-    }
+  .ocp-admin-navbar {
+    padding: 0 20px;
+  }
+
+  .ocp-admin-conversation {
+    padding: 20px;
+  }
+
+  .ocp-admin-chat-input {
+    padding: 15px 20px;
+  }
+
+  .ocp-admin-message {
+    max-width: 95%;
+  }
+
+  .ocp-admin-profile-dropdown {
+    min-width: 250px;
+    right: -20px;
+  }
 }
 
 @media (max-width: 480px) {
-    .chatbot-header {
-        padding: 10px 15px;
-    }
+  .ocp-admin-hero-content h1 {
+    font-size: 24px;
+  }
 
-    .chatbot-header h1 {
-        font-size: 1.3em;
-    }
+  .ocp-admin-container {
+    padding: 15px;
+  }
 
-    .chatbot-input {
-        padding: 10px 15px;
-    }
+  .ocp-admin-conversation {
+    padding: 15px;
+  }
 
-    .chatbot-input input {
-        padding: 10px 12px;
-        font-size: 0.9em;
-    }
+  .ocp-admin-chat-input {
+    padding: 12px 15px;
+  }
 
-    .chatbot-input button {
-        padding: 10px 15px;
-        font-size: 0.9em;
-    }
+  .ocp-admin-input-container {
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    .message {
-        padding: 10px 15px;
-        font-size: 0.9em;
-    }
-
-    .share-popup {
-        padding: 20px;
-    }
-
-    .share-popup-header h3 {
-        font-size: 1.3em;
-    }
-
-    .share-link-container input {
-        font-size: 0.8em;
-    }
-
-    .share-link-container button {
-        padding: 8px 12px;
-        font-size: 0.8em;
-    }
-    .avatar-placeholder {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
+  .ocp-admin-input-container button {
+    width: 100%;
     justify-content: center;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
+  }
+
+  .ocp-admin-profile-button {
+    padding: 6px 8px;
+  }
+
+  .ocp-admin-profile-info {
+    display: none;
+  }
+
+  .ocp-admin-profile-dropdown {
+    min-width: 200px;
+    right: -10px;
+  }
 }
 
-.avatar-placeholder-large {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgb(162, 26, 26);
-    font-weight: bold;
-    font-size: 36px;
-    margin: 0 auto 10px;
+/* Améliorations d'accessibilité */
+.ocp-admin-btn:focus,
+.ocp-admin-input-container input:focus,
+.ocp-admin-setting-item select:focus {
+  outline: 2px solid var(--ocp-admin-green);
+  outline-offset: 2px;
 }
+
+/* Transitions fluides pour tous les éléments interactifs */
+.ocp-admin-app-container * {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Support RTL pour l'arabe */
+.ocp-admin-app-container[dir="rtl"] {
+  direction: rtl;
+}
+
+.ocp-admin-app-container[dir="rtl"] .ocp-admin-message {
+  flex-direction: row-reverse;
+}
+
+.ocp-admin-app-container[dir="rtl"] .ocp-admin-user-message {
+  flex-direction: row;
 }
